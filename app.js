@@ -4,17 +4,24 @@ const ICON_CILOMOTOR = "CICLOMOTOR.png";
 const ICON_MOTO = "MOTO.png";
 const ICON_VMP = "VMPPLACA.png";
 
-window.onload = function() {
+// BUSCA LA PRIMERA LÍNEA: window.onload = function() { ...
+// Y SUSTITÚYELA POR ESTO:
+
+window.addEventListener('auth-success', function() {
+    // Aquí sigue tu código original intacto...
     document.getElementById('head-logo-left').src = LOGO_JUDICIAL;
     document.getElementById('head-logo-right').src = LOGO_GAD;
     document.getElementById('res-logo-left').src = LOGO_JUDICIAL;
     document.getElementById('res-logo-right').src = LOGO_GAD;
+    
+    // ... RESTO DEL CÓDIGO IGUAL ...
+    
     const imgs = document.querySelectorAll('img');
     imgs.forEach(img => img.onerror = function(){ 
         if(this.parentElement.id !== 'res-plate-container') { this.style.visibility='hidden'; }
     });
     app.renderStep('start');
-};
+});
 
 const app = {
     currentInfractionData: null, 

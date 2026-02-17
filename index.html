@@ -5,215 +5,357 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>POLICÍA LOCAL ALICANTE - VMP 2026</title>
     <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a2e52; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; }
+        .google-btn { background: white; color: #444; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .req-btn { background: #ff9800; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 15px; display: none; }
+        .status-txt { margin-top: 20px; font-size: 14px; color: #ffd700; min-height: 20px; max-width: 300px; line-height: 1.4; }
+        
+        /* ESTO ARREGLA EL FOOTER: Hacemos que el wrapper actúe como el body original */
+        #app-content {
+            display: none; /* Oculto hasta loguearse */
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            flex: 1;
+            overflow: hidden; 
+        }
+    </style>
 </head>
 <body>
 
-<header>
-    <img id="head-logo-left" class="header-logo" alt="Judicial" />
-    <div class="header-titles">
-        <h1>TOOLS FOR COPS</h1>
-        <h2>CATEGORIZACIÓN VEHÍCULOS LIGEROS</h2>
+    <div id="login-screen">
+        <h1 style="margin:0;">TOOLS FOR COPS</h1>
+        <h3 style="margin:5px 0 30px 0; opacity:0.8;">CONTROL DE ACCESO</h3>
+        
+        <button id="btn-login" class="google-btn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20">
+            Identificarse con Google
+        </button>
+        <button id="btn-request" class="req-btn">📝 SOLICITAR ACCESO</button>
+        <div id="login-status" class="status-txt"></div>
     </div>
-    <img id="head-logo-right" class="header-logo" alt="GAD" />
-</header>
 
-<div class="container">
-    <div class="card">
-        <div id="question-area"></div>
-        <div class="controls">
-            <button class="btn-control btn-back" id="btn-back-main" onclick="app.prevStep()">⬅️ Atrás</button>
-            <button class="btn-control btn-reset" onclick="app.resetApp()">Reiniciar 🔄</button>
+    <div id="app-content">
+        
+        <header>
+            <img id="head-logo-left" class="header-logo" alt="Judicial" />
+            <div class="header-titles">
+                <h1>TOOLS FOR COPS</h1>
+                <h2>CATEGORIZACIÓN VEHÍCULOS LIGEROS</h2>
+            </div>
+            <img id="head-logo-right" class="header-logo" alt="GAD" />
+        </header>
+
+        <div class="container">
+            <div class="card">
+                <div id="question-area"></div>
+                <div class="controls">
+                    <button class="btn-control btn-back" id="btn-back-main" onclick="app.prevStep()">⬅️ Atrás</button>
+                    <button class="btn-control btn-reset" onclick="app.resetApp()">Reiniciar 🔄</button>
+                </div>
+            </div>
+            <button onclick="window.logout()" style="margin: 20px auto; display: block; background: none; border: none; color: #999; font-size: 0.8rem; text-decoration: underline; cursor: pointer;">Cerrar Sesión</button>
+        </div>
+
+        <footer>
+            T4C Tools For Cops © 2026 &nbsp;|&nbsp; GAD © 2026
+        </footer>
+
+    </div>
+
+    <div id="result-modal" class="modal">
+        <div class="modal-content">
+            <div id="modal-header-strip" class="modal-header-strip">DICTAMEN TÉCNICO POLICIAL</div>
+            <div class="modal-body">
+                <div class="result-top-row">
+                    <img id="res-logo-left" class="result-logo-img" alt="Judicial" />
+                    <span id="res-icon" class="result-main-icon"></span>
+                    <img id="res-logo-right" class="result-logo-img" alt="GAD" />
+                </div>
+                <h3 id="res-title" class="result-main-title"></h3>
+                
+                <div class="table-plate-wrapper">
+                    <div class="table-container">
+                        <table class="legal-table">
+                            <tr><th>Permiso</th><td id="res-permiso"></td></tr>
+                            <tr><th>Seguro</th><td id="res-seguro"></td></tr>
+                            <tr><th>Matrícula</th><td id="res-matricula-text"></td></tr>
+                            <tr><th>Casco</th><td id="res-casco"></td></tr>
+                        </table>
+                    </div>
+                    <div id="res-plate-container"></div>
+                </div>
+                
+                <div id="res-legal-box" class="legal-box"></div>
+            </div>
+            <div class="modal-fixed-bottom">
+                <button id="btn-soa" class="btn-soa" onclick="app.showInfractions()"><span>👮</span> VER INFRACCIONES (ADMIN + SOA)</button>
+                <div class="nav-buttons-row">
+                    <button class="btn-modal-back" onclick="app.closeModal()">🔙 Corregir</button>
+                    <button class="btn-modal-new" onclick="app.resetApp()">🔄 Nueva</button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<footer>
-    T4C Tools For Cops © 2026 &nbsp;|&nbsp; GAD © 2026
-</footer>
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header-strip header-help">¿CÓMO FUNCIONA?</div>
+            <div class="modal-body">
+                <ul class="help-list">
+                    <li><strong>Categorización:</strong> Responde a las preguntas técnicas.</li>
+                    <li><strong>Resultados:</strong> Obtendrás la categoría oficial y requisitos.</li>
+                    <li><strong>Infracciones:</strong> Pulsa el botón ROJO para ver el boletín.</li>
+                    <li><strong>Admin (Azul):</strong> Selecciona "NO REGISTRADO" o "SIN PLACA" según corresponda en la parte superior de la tarjeta azul.</li>
+                    <li><strong>Dictamen 2/2021:</strong> Se excluye vía penal en L1e-A y VMP (salvo lesiones).</li>
+                    <li><strong>>1000W:</strong> Si supera 45km/h es Motocicleta (L3e) Penal.</li>
+                </ul>
 
-<div id="result-modal" class="modal">
-    <div class="modal-content">
-        <div id="modal-header-strip" class="modal-header-strip">DICTAMEN TÉCNICO POLICIAL</div>
-        <div class="modal-body">
-            <div class="result-top-row">
-                <img id="res-logo-left" class="result-logo-img" alt="Judicial" />
-                <span id="res-icon" class="result-main-icon"></span>
-                <img id="res-logo-right" class="result-logo-img" alt="GAD" />
-            </div>
-            <h3 id="res-title" class="result-main-title"></h3>
-            
-            <div class="table-plate-wrapper">
-                <div class="table-container">
-                    <table class="legal-table">
-                        <tr><th>Permiso</th><td id="res-permiso"></td></tr>
-                        <tr><th>Seguro</th><td id="res-seguro"></td></tr>
-                        <tr><th>Matrícula</th><td id="res-matricula-text"></td></tr>
-                        <tr><th>Casco</th><td id="res-casco"></td></tr>
+                <button class="help-toggle-btn" onclick="app.toggleHelpSection('legacy-vmp')">
+                    <span>📅 VMP SIN CHAPA IDENTIFICATIVA<br class="mobile-break"> (ANTES 22-01-2024)</span>
+                    <span>▼</span>
+                </button>
+                <div id="help-legacy-vmp" class="help-toggle-content">
+                    <h4 style="margin:5px 0 10px 0; color:#d32f2f; text-align:center; border-bottom:1px solid #e0e0e0; padding-bottom:5px;">CALENDARIO "DESAPARICIÓN" VMP ANTIGUO</h4>
+                    
+                    <p><strong>1. "Antiguos" (Comercializados ANTES 22/01/2024):</strong><br>
+                    Solo tienen pegatina del fabricante (Sin chapa metálica DGT).<br>
+                    • <strong>2026:</strong> LEGALES.<br>
+                    • <strong>22/01/2027:</strong> PROHIBIDOS (Pasan a residuos/juguetes).</p>
+                    
+                    <p><strong>2. "Certificados" (DESPUÉS 22/01/2024):</strong><br>
+                    Llevan Placa Metálica con QR. Legales indefinidamente.</p>
+                    
+                    <p><strong>PROBLEMA REGISTRO 2026:</strong><br>
+                    La DGT podría no permitir inscribir VMP antiguos o dar permisos temporales hasta enero 2027.</p>
+
+                    <div class="legacy-advice">
+                        <strong>Consejo al ciudadano:</strong> "Oiga, si su patinete es de los viejos y no tiene la chapa plateada de la DGT, sepa que en enero de 2027 ya no valdrá. Téngalo en cuenta antes de gastar dinero en seguros o trámites largos, porque le queda un año de vida útil."
+                    </div>
+
+                    <table class="legacy-table">
+                        <tr>
+                            <th style="text-align:left;">¿Qué ves?</th>
+                            <th>HOY (2026)</th>
+                            <th>Post-2027</th>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;">Solo Pegatina (Xiaomi/Cecotec...)</td>
+                            <td style="color:#2e7d32;">LEGAL<br><span style="font-size:0.7rem; font-weight:normal;">(Moratoria)</span></td>
+                            <td style="color:#d32f2f;">ILEGAL<br><span style="font-size:0.7rem; font-weight:normal;">(500€)</span></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;">Placa Metálica ("Certificado VMP" + QR)</td>
+                            <td style="color:#2e7d32;">LEGAL</td>
+                            <td style="color:#2e7d32;">LEGAL</td>
+                        </tr>
                     </table>
                 </div>
-                <div id="res-plate-container"></div>
+
+                <div class="disclaimer-note">
+                    No válido para uso oficial. Pendiente de supervisión.
+                </div>
             </div>
+            <div class="modal-fixed-bottom">
+                <button class="btn-modal-new" style="width:100%" onclick="document.getElementById('help-modal').style.display='none'">ENTENDIDO</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="infraction-modal" class="modal">
+        <div class="infraction-box">
+            <div class="infraction-title">BOLETÍN DE DENUNCIAS</div>
             
-            <div id="res-legal-box" class="legal-box"></div>
-        </div>
-        <div class="modal-fixed-bottom">
-            <button id="btn-soa" class="btn-soa" onclick="app.showInfractions()"><span>👮</span> VER INFRACCIONES (ADMIN + SOA)</button>
-            <div class="nav-buttons-row">
-                <button class="btn-modal-back" onclick="app.closeModal()">🔙 Corregir</button>
-                <button class="btn-modal-new" onclick="app.resetApp()">🔄 Nueva</button>
+            <div class="inf-toggle-container" id="inf-tabs">
+                <button class="inf-toggle-btn active" id="btn-tab-driver" onclick="app.switchInfractionMode('driver')">CIRCULA (Titular)</button>
+                <button class="inf-toggle-btn" id="btn-tab-owner" onclick="app.switchInfractionMode('owner')">NO CIRCULA (Titular)</button>
             </div>
-        </div>
-    </div>
-</div>
 
-<div id="help-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header-strip header-help">¿CÓMO FUNCIONA?</div>
-        <div class="modal-body">
-            <ul class="help-list">
-                <li><strong>Categorización:</strong> Responde a las preguntas técnicas.</li>
-                <li><strong>Resultados:</strong> Obtendrás la categoría oficial y requisitos.</li>
-                <li><strong>Infracciones:</strong> Pulsa el botón ROJO para ver el boletín.</li>
-                <li><strong>Admin (Azul):</strong> Selecciona "NO REGISTRADO" o "SIN PLACA" según corresponda en la parte superior de la tarjeta azul.</li>
-                <li><strong>Dictamen 2/2021:</strong> Se excluye vía penal en L1e-A y VMP (salvo lesiones).</li>
-                <li><strong>>1000W:</strong> Si supera 45km/h es Motocicleta (L3e) Penal.</li>
-            </ul>
-
-            <button class="help-toggle-btn" onclick="app.toggleHelpSection('legacy-vmp')">
-                <span>📅 VMP SIN CHAPA IDENTIFICATIVA<br class="mobile-break"> (ANTES 22-01-2024)</span>
-                <span>▼</span>
-            </button>
-            <div id="help-legacy-vmp" class="help-toggle-content">
-                <h4 style="margin:5px 0 10px 0; color:#d32f2f; text-align:center; border-bottom:1px solid #e0e0e0; padding-bottom:5px;">CALENDARIO "DESAPARICIÓN" VMP ANTIGUO</h4>
+            <div class="inf-content-scroll">
                 
-                <p><strong>1. "Antiguos" (Comercializados ANTES 22/01/2024):</strong><br>
-                Solo tienen pegatina del fabricante (Sin chapa metálica DGT).<br>
-                • <strong>2026:</strong> LEGALES.<br>
-                • <strong>22/01/2027:</strong> PROHIBIDOS (Pasan a residuos/juguetes).</p>
-                
-                <p><strong>2. "Certificados" (DESPUÉS 22/01/2024):</strong><br>
-                Llevan Placa Metálica con QR. Legales indefinidamente.</p>
-                
-                <p><strong>PROBLEMA REGISTRO 2026:</strong><br>
-                La DGT podría no permitir inscribir VMP antiguos o dar permisos temporales hasta enero 2027.</p>
-
-                <div class="legacy-advice">
-                    <strong>Consejo al ciudadano:</strong> "Oiga, si su patinete es de los viejos y no tiene la chapa plateada de la DGT, sepa que en enero de 2027 ya no valdrá. Téngalo en cuenta antes de gastar dinero en seguros o trámites largos, porque le queda un año de vida útil."
+                <div id="inf-card-admin" class="inf-card">
+                    <div class="inf-card-header header-admin">
+                        <div style="margin-bottom:5px;">AUT. ADMINISTRATIVA</div>
+                        <div id="admin-toggle-wrapper" class="admin-options-container" style="display:none;">
+                            <button id="btn-opt-noreg" class="admin-opt-btn active" onclick="app.setAdminMode('default')">NO REGISTRADO</button>
+                            <button id="btn-opt-noplate" class="admin-opt-btn" onclick="app.setAdminMode('alt')">SIN PLACA</button>
+                        </div>
+                    </div>
+                    <div class="inf-card-body">
+                        <div class="inf-grid-row">
+                            <div class="inf-item"><span class="inf-label">Normativa</span><span id="inf-admin-norm" class="inf-val"></span></div>
+                            <div class="inf-item"><span class="inf-label">Opción</span><span id="inf-admin-opt" class="inf-val"></span></div>
+                        </div>
+                        <div class="inf-grid-row">
+                            <div class="inf-item"><span class="inf-label">Importe</span><span id="inf-admin-amount" class="inf-val red"></span></div>
+                            <div class="inf-item"><span class="inf-label">Reducido</span><span id="inf-admin-reduced" class="inf-val green"></span></div>
+                        </div>
+                        <div class="inf-text" id="inf-admin-text"></div>
+                        <div class="measure-box">
+                            <span id="inf-admin-action"></span>
+                            <svg class="tow-icon" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="35" width="70" height="8" fill="#333" rx="2" />
+                                <path d="M70,35 L70,20 L80,20 L85,28 L95,28 L95,45 L75,45 Z" fill="#FFC107" stroke="#333" stroke-width="2"/>
+                                <path d="M72,22 L79,22 L83,28 L72,28 Z" fill="#E0F7FA" />
+                                <circle cx="15" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
+                                <circle cx="25" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
+                                <circle cx="85" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
+                                <line x1="20" y1="35" x2="50" y2="10" stroke="#333" stroke-width="3" />
+                                <line x1="50" y1="10" x2="50" y2="25" stroke="#333" stroke-width="2" />
+                                <path d="M47,25 L53,25 L50,30 Z" fill="#D32F2F" />
+                                <path d="M10,32 L20,20 L40,20 L45,32 Z" fill="#E53935" opacity="0.8"/>
+                                <rect x="75" y="16" width="6" height="4" fill="#FF9800" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
 
-                <table class="legacy-table">
-                    <tr>
-                        <th style="text-align:left;">¿Qué ves?</th>
-                        <th>HOY (2026)</th>
-                        <th>Post-2027</th>
-                    </tr>
-                    <tr>
-                        <td style="text-align:left;">Solo Pegatina (Xiaomi/Cecotec...)</td>
-                        <td style="color:#2e7d32;">LEGAL<br><span style="font-size:0.7rem; font-weight:normal;">(Moratoria)</span></td>
-                        <td style="color:#d32f2f;">ILEGAL<br><span style="font-size:0.7rem; font-weight:normal;">(500€)</span></td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:left;">Placa Metálica ("Certificado VMP" + QR)</td>
-                        <td style="color:#2e7d32;">LEGAL</td>
-                        <td style="color:#2e7d32;">LEGAL</td>
-                    </tr>
-                </table>
-            </div>
+                <div id="inf-card-soa" class="inf-card">
+                    <div class="inf-card-header header-soa">SEGURO OBLIGATORIO (SOA)</div>
+                    <div class="inf-card-body">
+                        <div class="inf-grid-row">
+                            <div class="inf-item"><span class="inf-label">Normativa</span><span class="inf-val">RD Leg 8/2004</span></div>
+                            <div class="inf-item"><span class="inf-label">Opción</span><span id="inf-soa-opt" class="inf-val"></span></div>
+                        </div>
+                        <div class="inf-grid-row">
+                            <div class="inf-item"><span class="inf-label">Importe</span><span id="inf-soa-amount" class="inf-val red"></span></div>
+                            <div class="inf-item"><span class="inf-label">Reducido</span><span id="inf-soa-reduced" class="inf-val green"></span></div>
+                        </div>
+                        <div class="inf-text" id="inf-soa-text"></div>
+                        <div class="measure-box">
+                            <span>MEDIDA: INMOVILIZACIÓN / DEPÓSITO</span>
+                            <svg class="tow-icon" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="35" width="70" height="8" fill="#333" rx="2" />
+                                <path d="M70,35 L70,20 L80,20 L85,28 L95,28 L95,45 L75,45 Z" fill="#FFC107" stroke="#333" stroke-width="2"/>
+                                <path d="M72,22 L79,22 L83,28 L72,28 Z" fill="#E0F7FA" />
+                                <circle cx="15" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
+                                <circle cx="25" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
+                                <circle cx="85" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
+                                <line x1="20" y1="35" x2="50" y2="10" stroke="#333" stroke-width="3" />
+                                <line x1="50" y1="10" x2="50" y2="25" stroke="#333" stroke-width="2" />
+                                <path d="M47,25 L53,25 L50,30 Z" fill="#D32F2F" />
+                                <path d="M10,32 L20,20 L40,20 L45,32 Z" fill="#E53935" opacity="0.8"/>
+                                <rect x="75" y="16" width="6" height="4" fill="#FF9800" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="disclaimer-note">
-                No válido para uso oficial. Pendiente de supervisión.
             </div>
-        </div>
-        <div class="modal-fixed-bottom">
-            <button class="btn-modal-new" style="width:100%" onclick="document.getElementById('help-modal').style.display='none'">ENTENDIDO</button>
+            <button class="btn-close-inf" onclick="document.getElementById('infraction-modal').style.display='none'">CERRAR</button>
         </div>
     </div>
-</div>
 
-<div id="infraction-modal" class="modal">
-    <div class="infraction-box">
-        <div class="infraction-title">BOLETÍN DE DENUNCIAS</div>
-        
-        <div class="inf-toggle-container" id="inf-tabs">
-            <button class="inf-toggle-btn active" id="btn-tab-driver" onclick="app.switchInfractionMode('driver')">CIRCULA (Titular)</button>
-            <button class="inf-toggle-btn" id="btn-tab-owner" onclick="app.switchInfractionMode('owner')">NO CIRCULA (Titular)</button>
-        </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        <div class="inf-content-scroll">
+        // -----------------------------------------------------------
+        // 1. PEGA AQUÍ TUS CLAVES DE FIREBASE EXACTAS
+        // -----------------------------------------------------------
+  const firebaseConfig = {
+  apiKey: "AIzaSyAYKu2Gx8MgIk9tYYx6BstERQsitKPQIiU",
+  authDomain: "t4c-gad.firebaseapp.com",
+  projectId: "t4c-gad",
+  storageBucket: "t4c-gad.firebasestorage.app",
+  messagingSenderId: "765902351715",
+  appId: "1:765902351715:web:5be95297e94984ecb07756"
+};
+        // -----------------------------------------------------------
+
+        const appFirebase = initializeApp(firebaseConfig);
+        const auth = getAuth(appFirebase);
+        const db = getFirestore(appFirebase);
+        const provider = new GoogleAuthProvider();
+
+        const ui = {
+            loginScreen: document.getElementById('login-screen'),
+            appContent: document.getElementById('app-content'),
+            btnLogin: document.getElementById('btn-login'),
+            btnRequest: document.getElementById('btn-request'),
+            status: document.getElementById('login-status')
+        };
+
+        // LOGIN
+        ui.btnLogin.addEventListener('click', () => {
+            ui.status.innerText = "Conectando...";
+            signInWithPopup(auth, provider).then((res) => checkUser(res.user)).catch(e => ui.status.innerText = "Error: " + e.message);
+        });
+
+        // VERIFICAR USUARIO
+        async function checkUser(user) {
+            ui.btnLogin.style.display = 'none';
+            ui.status.innerText = "Verificando autorización...";
             
-            <div id="inf-card-admin" class="inf-card">
-                <div class="inf-card-header header-admin">
-                    <div style="margin-bottom:5px;">AUT. ADMINISTRATIVA</div>
-                    <div id="admin-toggle-wrapper" class="admin-options-container" style="display:none;">
-                        <button id="btn-opt-noreg" class="admin-opt-btn active" onclick="app.setAdminMode('default')">NO REGISTRADO</button>
-                        <button id="btn-opt-noplate" class="admin-opt-btn" onclick="app.setAdminMode('alt')">SIN PLACA</button>
-                    </div>
-                </div>
-                <div class="inf-card-body">
-                    <div class="inf-grid-row">
-                        <div class="inf-item"><span class="inf-label">Normativa</span><span id="inf-admin-norm" class="inf-val"></span></div>
-                        <div class="inf-item"><span class="inf-label">Opción</span><span id="inf-admin-opt" class="inf-val"></span></div>
-                    </div>
-                    <div class="inf-grid-row">
-                        <div class="inf-item"><span class="inf-label">Importe</span><span id="inf-admin-amount" class="inf-val red"></span></div>
-                        <div class="inf-item"><span class="inf-label">Reducido</span><span id="inf-admin-reduced" class="inf-val green"></span></div>
-                    </div>
-                    <div class="inf-text" id="inf-admin-text"></div>
-                    <div class="measure-box">
-                        <span id="inf-admin-action"></span>
-                        <svg class="tow-icon" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="5" y="35" width="70" height="8" fill="#333" rx="2" />
-                            <path d="M70,35 L70,20 L80,20 L85,28 L95,28 L95,45 L75,45 Z" fill="#FFC107" stroke="#333" stroke-width="2"/>
-                            <path d="M72,22 L79,22 L83,28 L72,28 Z" fill="#E0F7FA" />
-                            <circle cx="15" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
-                            <circle cx="25" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
-                            <circle cx="85" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
-                            <line x1="20" y1="35" x2="50" y2="10" stroke="#333" stroke-width="3" />
-                            <line x1="50" y1="10" x2="50" y2="25" stroke="#333" stroke-width="2" />
-                            <path d="M47,25 L53,25 L50,30 Z" fill="#D32F2F" />
-                            <path d="M10,32 L20,20 L40,20 L45,32 Z" fill="#E53935" opacity="0.8"/>
-                            <rect x="75" y="16" width="6" height="4" fill="#FF9800" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
+            const ref = doc(db, "users", user.email);
+            try {
+                const snap = await getDoc(ref);
+                if (snap.exists()) {
+                    if (snap.data().autorizado === true) {
+                        enterApp(); // AUTORIZADO
+                    } else {
+                        ui.status.innerHTML = `⚠️ Solicitud PENDIENTE.<br>Usuario: <b>${user.email}</b><br>Espera aprobación.`;
+                        showLogout();
+                    }
+                } else {
+                    // NO REGISTRADO -> MOSTRAR BOTÓN SOLICITAR
+                    ui.status.innerHTML = `Usuario no registrado: <b>${user.email}</b>`;
+                    ui.btnRequest.style.display = 'inline-block';
+                    ui.btnRequest.onclick = () => requestAccess(user);
+                    showLogout();
+                }
+            } catch (e) {
+                console.error(e);
+                ui.status.innerText = "Error de conexión BD.";
+            }
+        }
 
-            <div id="inf-card-soa" class="inf-card">
-                <div class="inf-card-header header-soa">SEGURO OBLIGATORIO (SOA)</div>
-                <div class="inf-card-body">
-                    <div class="inf-grid-row">
-                        <div class="inf-item"><span class="inf-label">Normativa</span><span class="inf-val">RD Leg 8/2004</span></div>
-                        <div class="inf-item"><span class="inf-label">Opción</span><span id="inf-soa-opt" class="inf-val"></span></div>
-                    </div>
-                    <div class="inf-grid-row">
-                        <div class="inf-item"><span class="inf-label">Importe</span><span id="inf-soa-amount" class="inf-val red"></span></div>
-                        <div class="inf-item"><span class="inf-label">Reducido</span><span id="inf-soa-reduced" class="inf-val green"></span></div>
-                    </div>
-                    <div class="inf-text" id="inf-soa-text"></div>
-                    <div class="measure-box">
-                        <span>MEDIDA: INMOVILIZACIÓN / DEPÓSITO</span>
-                        <svg class="tow-icon" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="5" y="35" width="70" height="8" fill="#333" rx="2" />
-                            <path d="M70,35 L70,20 L80,20 L85,28 L95,28 L95,45 L75,45 Z" fill="#FFC107" stroke="#333" stroke-width="2"/>
-                            <path d="M72,22 L79,22 L83,28 L72,28 Z" fill="#E0F7FA" />
-                            <circle cx="15" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
-                            <circle cx="25" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
-                            <circle cx="85" cy="45" r="6" fill="#212121" stroke="#555" stroke-width="2"/>
-                            <line x1="20" y1="35" x2="50" y2="10" stroke="#333" stroke-width="3" />
-                            <line x1="50" y1="10" x2="50" y2="25" stroke="#333" stroke-width="2" />
-                            <path d="M47,25 L53,25 L50,30 Z" fill="#D32F2F" />
-                            <path d="M10,32 L20,20 L40,20 L45,32 Z" fill="#E53935" opacity="0.8"/>
-                            <rect x="75" y="16" width="6" height="4" fill="#FF9800" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
+        // SOLICITAR ACCESO
+        async function requestAccess(user) {
+            ui.btnRequest.style.display = 'none';
+            ui.status.innerText = "Enviando solicitud...";
+            try {
+                await setDoc(doc(db, "users", user.email), {
+                    email: user.email,
+                    autorizado: false, // SE CREA COMO FALSO
+                    fecha: new Date().toISOString()
+                });
+                ui.status.innerHTML = "✅ Solicitud enviada.<br>Avisa al administrador.";
+            } catch (e) {
+                ui.status.innerText = "Error al guardar.";
+            }
+        }
 
-        </div>
-        <button class="btn-close-inf" onclick="document.getElementById('infraction-modal').style.display='none'">CERRAR</button>
-    </div>
-</div>
+        function enterApp() {
+            ui.status.style.color = "#4caf50";
+            ui.status.innerText = "Acceso Correcto.";
+            setTimeout(() => {
+                ui.loginScreen.style.display = 'none';
+                
+                // Muestra la app usando FLEX para mantener el footer en su sitio
+                ui.appContent.style.display = 'flex'; 
+                
+                window.dispatchEvent(new Event('auth-success')); 
+            }, 500);
+        }
 
-<script src="app.js"></script>
+        function showLogout() {
+            if(!document.getElementById('tmp-logout')) {
+                let btn = document.createElement('button');
+                btn.id='tmp-logout'; btn.innerText='(Salir)';
+                btn.style.cssText='background:none; border:none; color:#aaa; margin-top:10px; text-decoration:underline; cursor:pointer;';
+                btn.onclick = window.logout;
+                ui.loginScreen.appendChild(btn);
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => { if(user) checkUser(user); });
+        window.logout = () => signOut(auth).then(() => location.reload());
+    </script>
+
+    <script src="app.js"></script>
 </body>
 </html>
