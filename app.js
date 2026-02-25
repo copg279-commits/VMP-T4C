@@ -4,17 +4,11 @@ const ICON_CILOMOTOR = "CICLOMOTOR.png";
 const ICON_MOTO = "MOTO.png";
 const ICON_VMP = "VMPPLACA.png";
 
-// BUSCA LA PRIMERA LÍNEA: window.onload = function() { ...
-// Y SUSTITÚYELA POR ESTO:
-
 window.addEventListener('auth-success', function() {
-    // Aquí sigue tu código original intacto...
     document.getElementById('head-logo-left').src = LOGO_JUDICIAL;
     document.getElementById('head-logo-right').src = LOGO_GAD;
     document.getElementById('res-logo-left').src = LOGO_JUDICIAL;
     document.getElementById('res-logo-right').src = LOGO_GAD;
-    
-    // ... RESTO DEL CÓDIGO IGUAL ...
     
     const imgs = document.querySelectorAll('img');
     imgs.forEach(img => img.onerror = function(){ 
@@ -24,9 +18,7 @@ window.addEventListener('auth-success', function() {
 });
 
 const app = {
-    currentInfractionData: null, 
-    currentMode: 'driver',
-    isAdminSwitched: false, 
+    currentInfractionData: null, currentMode: 'driver', isAdminSwitched: false, 
     
     resultsDB: {
         "r_vmp_vpl": {
@@ -38,11 +30,7 @@ const app = {
                     default: { norm: "Art. 76.o LSV (Ref. 22bis RGV)", opt: "Genérica", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado incumpliendo las normas sobre el certificado para la circulación y su identificación (Carecer de registro).", action: "DEPÓSITO (ORD. MUN.)" },
                     alt: { norm: "Art. 10.2 LSV (RDL 6/2015)", opt: "5A", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado careciendo de las placas de matrícula (o identificación VMP) estando inscrito.", action: "DEPÓSITO (ORD. MUN.)" }
                 },
-                soa: { 
-                    type: "vpl", 
-                    driver: { opt: "2.1.5P", amount: 350, text: "CIRCULAR el vehículo personal ligero (VPL) sin tener suscrito seguro obligatorio." },
-                    owner: null 
-                }
+                soa: { type: "vpl", driver: { opt: "2.1.5P", amount: 350, text: "CIRCULAR el vehículo personal ligero (VPL) sin tener suscrito seguro obligatorio." }, owner: null }
             }
         },
         "r_vmp_motor": {
@@ -54,11 +42,7 @@ const app = {
                     default: { norm: "Art. 76.o LSV (Ref. 22bis RGV)", opt: "Genérica", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado incumpliendo las normas sobre el certificado para la circulación y su identificación (Carecer de registro).", action: "DEPÓSITO (ORD. MUN.)" },
                     alt: { norm: "Art. 10.2 LSV (RDL 6/2015)", opt: "5A", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado careciendo de las placas de matrícula (o identificación VMP) estando inscrito.", action: "DEPÓSITO (ORD. MUN.)" }
                 },
-                soa: { 
-                    type: "vmp_motor", 
-                    driver: { opt: "2.1.5N", amount: 800, text: "CIRCULAR con el vehículo reseñado (VMP asimilado a motor) careciendo del seguro obligatorio." }, 
-                    owner: { opt: "2.1.5O", amount: 610, text: "INCUMPLIR el propietario la obligación de mantener suscrito el seguro (VMP asimilado a motor)." } 
-                }
+                soa: { type: "vmp_motor", driver: { opt: "2.1.5N", amount: 800, text: "CIRCULAR con el vehículo reseñado (VMP asimilado a motor) careciendo del seguro obligatorio." }, owner: { opt: "2.1.5O", amount: 610, text: "INCUMPLIR el propietario la obligación de mantener suscrito el seguro (VMP asimilado a motor)." } }
             }
         },
         "r_epac": { title: "BICICLETA EPAC", icon: "🚲", style: "admin", matIconType: "none", perm: "Ninguno", seg: "No", mat: "No", casco: "Recomendado", text: "✅ <b>BICI ASISTIDA</b><br>Tratamiento de bicicleta.", infractions: null },
@@ -156,18 +140,12 @@ const app = {
         "r_prohibido": { 
             title: "PROHIBIDO", icon: "⛔", style: "danger", matIconType: "none", perm: "-", seg: "-", mat: "-", casco: "-", 
             text: "🚫 <b>NO APTO</b><br>No cumple normativa. Denuncia y retirada.", 
-            infractions: {
-                admin: { default: { norm: "Art. 12 RGV / Art 3 RGV", opt: "Generico", amount: "200 €", reduced: "100 €", text: "Circular con un vehículo que no reúne las condiciones técnicas (No homologado) o no ha sido objeto de inspección (Sin CoC).", action: "INMOVILIZACIÓN DEFINITIVA" } },
-                soa: null 
-            }
+            infractions: { admin: { default: { norm: "Art. 12 RGV / Art 3 RGV", opt: "Generico", amount: "200 €", reduced: "100 €", text: "Circular con un vehículo que no reúne las condiciones técnicas (No homologado) o no ha sido objeto de inspección (Sin CoC).", action: "INMOVILIZACIÓN DEFINITIVA" } }, soa: null }
         },
         "r_prohibido_voltaje": { 
             title: "ILEGAL (VOLTAJE)", icon: "🔌", style: "danger", matIconType: "none", perm: "-", seg: "-", mat: "-", casco: "-", 
             text: "🚫 <b>VOLTAJE PELIGROSO</b><br>Excede 100VCC / 240VAC.", 
-            infractions: {
-                admin: { default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa para circular.", action: "INMOVILIZACIÓN / DEPÓSITO" } },
-                soa: null 
-            }
+            infractions: { admin: { default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa para circular.", action: "INMOVILIZACIÓN / DEPÓSITO" } }, soa: null }
         }
     },
 
@@ -240,21 +218,40 @@ const app = {
     },
 
     historyStack: [],
+    dom: { qArea: document.getElementById('question-area'), modal: document.getElementById('result-modal') },
 
-    dom: { qArea: document.getElementById('question-area'), modal: document.getElementById('result-modal'), btnBackMain: document.getElementById('btn-back-main') },
-
+    // --- MAGIA PURA: BOTÓN UNIDO CON LA MANO IZQUIERDA Y REINICIO ARRIBA ---
     renderStep: function(key) {
         const step = this.steps[key];
         const d = this.dom;
-        let html = `<div class="question-header"><h2 class="question-title">${step.q}</h2><button class="help-btn-icon" onclick="document.getElementById('help-modal').style.display='flex'">?</button></div><div class="options-grid">`;
+        const canGoBack = this.historyStack.length > 0;
+        
+        let html = `<div class="question-header">
+                        <h2 class="question-title">${step.q}</h2>
+                        <div style="display:flex; gap:10px;">
+                            ${canGoBack ? `<button class="help-btn-icon" onclick="app.resetApp()" style="background:var(--police-light); color:var(--accent); border:none;" title="Empezar de cero">🔄</button>` : ''}
+                            <button class="help-btn-icon" onclick="document.getElementById('help-modal').style.display='flex'" title="Ayuda">?</button>
+                        </div>
+                    </div><div class="options-grid">`;
+        
         step.opts.forEach(opt => {
             const action = opt.result ? `app.showResult('${opt.result}')` : `app.nextStep('${key}', '${opt.next}')`;
-            html += `<button class="option-btn" onclick="${action}">${opt.t} <span>👉</span></button>`;
+            
+            if (canGoBack) {
+                // Genera un "Botón Doble": Izquierda retrocede, Derecha avanza
+                html += `
+                <div style="display: flex; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <button onclick="app.prevStep()" style="background-color: var(--police-light); color: var(--accent); border: none; padding: 0 18px; font-size: 1.4rem; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.2); transition: 0.2s;" title="Volver a la pregunta anterior">👈</button>
+                    <button class="option-btn" style="flex-grow: 1; border-radius: 0; box-shadow: none;" onclick="${action}">${opt.t} <span>👉</span></button>
+                </div>`;
+            } else {
+                // En la primera pregunta solo hay avance
+                html += `<button class="option-btn" onclick="${action}">${opt.t} <span>👉</span></button>`;
+            }
         });
+        
         html += `</div>`;
         d.qArea.innerHTML = html;
-        d.btnBackMain.disabled = (this.historyStack.length === 0);
-        d.btnBackMain.style.opacity = (this.historyStack.length === 0) ? "0.5" : "1";
     },
 
     nextStep: function(currentKey, nextKey) { this.historyStack.push(currentKey); this.renderStep(nextKey); },
@@ -285,25 +282,15 @@ const app = {
         plateContainer.innerHTML = ''; 
 
         if (data.matIconType && data.matIconType !== 'none') {
-            let iconSrc = '';
-            let iconClass = '';
-
+            let iconSrc = ''; let iconClass = '';
             if (data.matIconType === 'ciclomotor') { iconSrc = ICON_CILOMOTOR; iconClass = 'plate-ciclomotor'; } 
             else if (data.matIconType === 'moto') { iconSrc = ICON_MOTO; iconClass = 'plate-moto'; } 
             else if (data.matIconType === 'vmp') { iconSrc = ICON_VMP; iconClass = 'plate-vmp'; }
-
-            if (iconSrc) {
-                plateContainer.innerHTML = `<img src="${iconSrc}" alt="Matrícula" class="${iconClass}">`;
-            }
+            if (iconSrc) { plateContainer.innerHTML = `<img src="${iconSrc}" alt="Matrícula" class="${iconClass}">`; }
         }
 
         this.currentInfractionData = data.infractions;
-        // SI HAY ALGUNA INFRACCIÓN (Admin o SOA), MOSTRAR BOTÓN
-        if (data.infractions && (data.infractions.admin || data.infractions.soa)) { 
-            btnSoa.style.display = 'block'; 
-        } else { 
-            btnSoa.style.display = 'none'; 
-        }
+        if (data.infractions && (data.infractions.admin || data.infractions.soa)) { btnSoa.style.display = 'block'; } else { btnSoa.style.display = 'none'; }
         m.style.display = 'flex';
     },
 
@@ -311,7 +298,6 @@ const app = {
         if(!this.currentInfractionData) return;
         const inf = this.currentInfractionData;
         
-        // CONFIGURAR TARJETA ADMIN
         const cardAdmin = document.getElementById('inf-card-admin');
         const adminToggleWrapper = document.getElementById('admin-toggle-wrapper');
         const btnOptNoReg = document.getElementById('btn-opt-noreg');
@@ -319,12 +305,10 @@ const app = {
 
         if(inf.admin) {
             cardAdmin.style.display = 'block';
-            // Reset toggle
             this.isAdminSwitched = false;
             btnOptNoReg.classList.add('active');
             btnOptNoPlate.classList.remove('active');
 
-            // Check if alternative exists to show toggle
             if (inf.admin.alt) {
                 adminToggleWrapper.style.display = 'flex';
                 this.setAdminContent(inf.admin.default);
@@ -332,32 +316,19 @@ const app = {
                 adminToggleWrapper.style.display = 'none';
                 this.setAdminContent(inf.admin.default); 
             }
-        } else {
-            cardAdmin.style.display = 'none';
-        }
+        } else { cardAdmin.style.display = 'none'; }
 
-        // CONFIGURAR TARJETA SOA
         const cardSoa = document.getElementById('inf-card-soa');
         const infTabs = document.getElementById('inf-tabs');
         
         if(inf.soa) {
             cardSoa.style.display = 'block';
-            
-            // GESTIÓN DE PESTAÑAS SEGÚN TIPO (VPL vs MOTOR)
             if (inf.soa.type === 'vpl') {
-                // Si es VPL, SOLO hay modo conductor. OCULTAR PESTAÑAS.
-                infTabs.style.display = 'none';
-                this.switchInfractionMode('driver'); 
+                infTabs.style.display = 'none'; this.switchInfractionMode('driver'); 
             } else {
-                // Si es MOTOR, mostrar pestañas y activar la primera
-                infTabs.style.display = 'flex';
-                this.switchInfractionMode('driver');
+                infTabs.style.display = 'flex'; this.switchInfractionMode('driver');
             }
-            
-        } else {
-            cardSoa.style.display = 'none';
-            infTabs.style.display = 'none';
-        }
+        } else { cardSoa.style.display = 'none'; infTabs.style.display = 'none'; }
 
         document.getElementById('infraction-modal').style.display = 'flex';
     },
@@ -368,39 +339,29 @@ const app = {
         document.getElementById('inf-admin-amount').innerText = data.amount;
         document.getElementById('inf-admin-reduced').innerText = data.reduced || '-';
         document.getElementById('inf-admin-text').innerText = data.text;
-        
-        // Medida con icono
-        const measureText = data.action.replace(' 🏗️', '');
-        document.getElementById('inf-admin-action').innerText = "MEDIDA: " + measureText;
+        document.getElementById('inf-admin-action').innerText = "MEDIDA: " + data.action.replace(' 🏗️', '');
     },
 
     setAdminMode: function(mode) {
         if(!this.currentInfractionData || !this.currentInfractionData.admin) return;
-        
         const btnNoReg = document.getElementById('btn-opt-noreg');
         const btnNoPlate = document.getElementById('btn-opt-noplate');
 
         if(mode === 'alt') {
             this.setAdminContent(this.currentInfractionData.admin.alt);
-            btnNoReg.classList.remove('active');
-            btnNoPlate.classList.add('active');
+            btnNoReg.classList.remove('active'); btnNoPlate.classList.add('active');
         } else {
             this.setAdminContent(this.currentInfractionData.admin.default);
-            btnNoReg.classList.add('active');
-            btnNoPlate.classList.remove('active');
+            btnNoReg.classList.add('active'); btnNoPlate.classList.remove('active');
         }
     },
 
     switchInfractionMode: function(mode) {
         this.currentMode = mode;
         if(!this.currentInfractionData || !this.currentInfractionData.soa) return;
-
-        // Si es VPL, no existe 'owner', forzar 'driver' por seguridad
         if (this.currentInfractionData.soa.type === 'vpl' && mode === 'owner') return;
 
         const data = this.currentInfractionData.soa[mode];
-        
-        // Actualizar botones visualmente si están visibles
         const btns = document.querySelectorAll('.inf-toggle-btn');
         btns.forEach(btn => btn.classList.remove('active'));
         if(mode === 'driver') btns[0].classList.add('active'); else btns[1].classList.add('active');
@@ -411,15 +372,7 @@ const app = {
         document.getElementById('inf-soa-text').innerText = data.text;
     },
 
-    toggleHelpSection: function(id) {
-        const el = document.getElementById('help-' + id);
-        if (el.style.display === 'block') {
-            el.style.display = 'none';
-        } else {
-            el.style.display = 'block';
-        }
-    },
-
+    toggleHelpSection: function(id) { const el = document.getElementById('help-' + id); el.style.display = (el.style.display === 'block') ? 'none' : 'block'; },
     closeModal: function() { this.dom.modal.style.display = 'none'; },
     resetApp: function() { this.closeModal(); this.historyStack = []; this.renderStep('start'); }
 };

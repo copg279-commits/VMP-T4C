@@ -1,5 +1,5 @@
 /* =========================================
-   VARIABLES DE COLOR
+   VARIABLES DE COLOR Y ESTRUCTURA
    ========================================= */
 :root {
     --police-blue: #0a2e52;
@@ -16,150 +16,97 @@
 
 * { box-sizing: border-box; }
 
-/* --- ESTRUCTURA PRINCIPAL (100% PANTALLA) --- */
 body {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg);
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100dvh; /* Ocupa exactamente la pantalla */
-    overflow: hidden; /* El body no hace scroll, lo hace el contenedor interior */
+    margin: 0; padding: 0; display: flex; flex-direction: column;
+    height: 100dvh; overflow: hidden; 
 }
 
-#app-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-}
+#app-content { display: flex; flex-direction: column; height: 100%; width: 100%; }
 
 /* --- HEADER --- */
 header {
-    flex: 0 0 auto; /* Fijo, no cambia de tamaño */
-    background-color: var(--white);
-    border-bottom: 4px solid var(--police-blue);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    z-index: 10;
-    width: 100%;
+    flex: 0 0 auto; background-color: var(--white); border-bottom: 4px solid var(--police-blue);
+    display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; z-index: 10; width: 100%;
 }
-
 .header-logo { height: 62px; width: auto; object-fit: contain; }
 .header-titles { display: flex; flex-direction: column; align-items: center; text-align: center; flex-grow: 1; padding: 0 5px; }
 .header-titles h1 { margin: 0; font-size: 1.0rem; font-weight: 900; color: var(--police-blue); line-height: 1.1; }
 .header-titles h2 { margin: 2px 0 0 0; font-size: 0.65rem; font-weight: 700; color: #666; }
 
-/* --- CONTENEDOR CENTRAL (El único que hace scroll) --- */
+/* --- CONTENEDOR CENTRAL --- */
 .container { 
-    flex: 1 1 auto; 
-    width: 100%; 
-    /* El 80px del final es el espacio extra para que el footer fijo no tape los botones */
-    padding: 20px 15px 80px 15px; 
-    overflow-y: auto; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center;
+    flex: 1 1 auto; width: 100%; padding: 20px 15px 80px 15px; 
+    overflow-y: auto; display: flex; flex-direction: column; align-items: center;
 }
 
-/* --- TARJETA BLANCA --- */
+/* --- TARJETA BLANCA (NUEVO ORDEN FLEXIBLE) --- */
 .card { 
-    background: var(--white); 
-    border-radius: 12px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-    width: 100%;
-    max-width: 900px;
-    /* La tarjeta ocupa todo el alto disponible, pero crece si hay muchas opciones */
-    flex: 1 0 auto; 
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    gap: 15px;
+    background: var(--white); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+    width: 100%; max-width: 900px; flex: 1 0 auto; 
+    display: flex; flex-direction: column; padding: 20px; gap: 15px;
+    min-height: 80vh; /* Asegura que siempre ocupe pantalla completa */
 }
 
+/* --- PREGUNTAS Y BOTONES --- */
 .question-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); margin-bottom: 5px; padding-bottom: 10px; flex-shrink: 0; }
 .question-title { color: var(--police-blue); font-size: 1.1rem; font-weight: 700; margin: 0; line-height: 1.3; }
-.help-btn-icon { background: transparent; border: 2px solid var(--police-light); color: var(--police-light); border-radius: 50%; width: 28px; height: 28px; font-weight: bold; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.help-btn-icon { background: transparent; border: 2px solid var(--police-light); color: var(--police-light); border-radius: 50%; width: 32px; height: 32px; font-weight: bold; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.2s;}
+.help-btn-icon:active { transform: scale(0.9); }
 
 .options-grid { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
 
 button.option-btn { 
     background-color: var(--police-light); color: var(--white); border: none; padding: 16px; 
     border-radius: 8px; font-size: 1rem; cursor: pointer; text-align: left; 
-    display: flex; justify-content: space-between; align-items: center; font-weight: 600; 
+    display: flex; justify-content: space-between; align-items: center; font-weight: 600; transition: transform 0.2s;
 }
 button.option-btn:active { background-color: var(--police-blue); transform: scale(0.98); }
 
-/* --- POLICÍA PENSANDO (ADAPTACIÓN PERFECTA) --- */
-.calculating-status {
-    flex: 1 1 0; /* Clave: Ocupa todo el hueco disponible */
-    min-height: 0; /* Clave: Permite que se encoja por debajo de su tamaño sin romper nada */
+/* --- CONTENEDOR INFERIOR PEGADO ABAJO --- */
+.bottom-wrapper {
+    flex-grow: 1; /* Esto es magia: Empuja todo hacia el final de la tarjeta */
     display: flex;
     flex-direction: column;
+    justify-content: flex-end; 
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    margin: 10px 0;
-}
-
-.thinking-cop-img {
-    flex: 1 1 0; /* La imagen absorbe el espacio */
-    min-height: 0; /* Se encoge si la aprietan */
     width: 100%;
-    height: 100%;
-    object-fit: contain; /* Nunca se deforma ni se corta */
+    margin-top: 15px;
 }
 
-/* Texto animado */
+/* --- POLICÍA PENSANDO (ESCALADO INTELIGENTE) --- */
+.thinking-cop-img {
+    width: 100%;
+    max-width: 450px; /* En PC crecerá hasta aquí de ancho */
+    height: auto;
+    max-height: 40vh; /* Crece en altura basándose en la pantalla, no se hace enano */
+    object-fit: contain; 
+}
+
 .calculating-text {
-    flex: 0 0 auto; /* El texto NO se encoge */
-    margin-top: 15px; margin-bottom: 0; font-weight: 900; font-size: 1.1rem;
+    margin-top: 15px; margin-bottom: 5px; font-weight: 900; font-size: 1.1rem;
     text-align: center; text-transform: uppercase; letter-spacing: 1px;
     animation: textPulseColor 1.2s infinite alternate;
 }
 
-@keyframes textPulseColor {
-    0% { color: var(--police-blue); opacity: 1; text-shadow: none; }
-    100% { color: #2196F3; opacity: 0.8; text-shadow: 0 0 8px rgba(33, 150, 243, 0.3); }
+#btn-admin-panel {
+    display: none; margin-top: 10px; background: #0a2e52; color: white; border: none; 
+    padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; max-width: 400px; font-weight: bold; 
 }
+
+@keyframes textPulseColor { 0% { color: var(--police-blue); opacity: 1; text-shadow: none; } 100% { color: #2196F3; opacity: 0.8; text-shadow: 0 0 8px rgba(33, 150, 243, 0.3); } }
 .dots::after { content: ''; animation: loadingDots 1.5s infinite steps(4, end); }
 @keyframes loadingDots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } 100% { content: ''; } }
 
-/* --- CONTROLES (Atrás / Reiniciar) --- */
-.controls { 
-    flex: 0 0 auto; /* Fijos abajo de la tarjeta, no se encogen */
-    margin-top: auto; 
-    display: flex; 
-    gap: 10px;
-}
-.btn-control { padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; font-size: 1rem; }
-.btn-back { background-color: #90a4ae; color: #37474f; }
-.btn-reset { background-color: var(--accent); color: #000; }
-
-/* --- FOOTER (PERFECTO, ANCHO COMPLETO) --- */
+/* --- FOOTER --- */
 footer {
-    position: fixed; /* Lo saca de cualquier caja y lo pega a la pantalla */
-    bottom: 0;
-    left: 0;
-    width: 100vw; /* 100% del ancho real de la pantalla, sin importar márgenes */
-    margin: 0;
-    background: var(--police-blue); 
-    color: white; 
-    text-align: center;
-    padding: 15px 5px; 
-    font-size: 0.85rem; /* Reducido un pelín para asegurar que cabe en móviles estrechos */
-    font-weight: 600;
-    white-space: nowrap; /* Prohíbe terminantemente que el texto salte a una segunda línea */
-    z-index: 9999; /* Asegura que esté por encima de todo */
+    position: fixed; bottom: 0; left: 0; width: 100vw; margin: 0; background: var(--police-blue); color: white; 
+    text-align: center; padding: 15px 5px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; z-index: 9999; 
     padding-bottom: max(15px, env(safe-area-inset-bottom));
 }
 
-/* =========================================
-   RESTO DE ESTILOS (MODALES, ETC.) 
-   ========================================= */
+/* --- MODALES Y RESULTADOS (Tus originales intactos) --- */
 .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 10px; backdrop-filter: blur(4px); }
 .modal-content { background-color: var(--white); border-radius: 10px; width: 100%; max-width: 600px; display: flex; flex-direction: column; max-height: 98dvh; animation: slideUp 0.3s ease-out; box-shadow: 0 10px 40px rgba(0,0,0,0.5);}
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -170,7 +117,7 @@ footer {
 .header-help { background-color: var(--police-light); }
 .modal-body { padding: 10px; overflow-y: auto; flex-grow: 1; min-height: 0; }
 .result-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.result-logo-img { height: 72px; width: 72px; object-fit: contain; transition: all 0.3s ease; } 
+.result-logo-img { height: 72px; width: 72px; object-fit: contain; } 
 .result-main-icon { font-size: 3rem; line-height: 1; }
 .result-main-title { text-align: center; font-size: 1.2rem; margin: 0 0 10px 0; color: #333; font-weight: 800; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 .table-plate-wrapper { display: flex; justify-content: space-between; align-items: stretch; gap: 10px; margin-bottom: 10px; }
@@ -225,19 +172,14 @@ footer {
 .tow-icon { height: 38px; width: auto; flex-shrink: 0; margin-left: 8px; }
 .btn-close-inf { width: 100%; padding: 12px; background: #444; color: white; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; border-radius: 0 0 12px 12px; flex-shrink: 0;}
 
-/* =========================================
-   MEDIA QUERY: PANTALLAS GRANDES (PC/TABLET)
-   ========================================= */
 @media (min-width: 768px) {
     header { height: 125px; padding: 15px 40px; }
     .header-logo { height: 100px; } 
     .header-titles h1 { font-size: 1.8rem; }
     .header-titles h2 { font-size: 1rem; }
-    
     .container { padding-top: 40px; }
     .card { padding: 40px; gap: 30px; }
     button.option-btn { padding: 20px; font-size: 1.1rem; }
-    
     .modal-content { max-width: 900px; }
     .result-logo-img { height: 120px; width: 120px; } 
     .inf-content-scroll { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
