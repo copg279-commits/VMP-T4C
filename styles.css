@@ -64,34 +64,40 @@ button.option-btn {
 }
 button.option-btn:active { background-color: var(--police-blue); transform: scale(0.98); }
 
-/* --- CONTENEDOR INFERIOR PEGADO ABAJO --- */
+/* --- CONTENEDOR INFERIOR PEGADO ABAJO (BLINDADO) --- */
 .bottom-wrapper {
-    flex-grow: 1; /* Esto es magia: Empuja todo hacia el final de la tarjeta */
+    flex: 1 1 0; /* Ocupa el espacio libre, pero permite encogerse */
+    min-height: 0; /* VITAL: Evita que fuerce el scroll vertical */
     display: flex;
     flex-direction: column;
     justify-content: flex-end; 
     align-items: center;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
-/* --- POLICÍA PENSANDO (ESCALADO INTELIGENTE) --- */
+/* --- POLICÍA PENSANDO (AMORTIGUADOR INTELIGENTE) --- */
 .thinking-cop-img {
+    flex: 1 1 0; /* Absorbe el alto disponible */
+    min-height: 0; /* Si falta espacio, se encoge en lugar de echar al botón fuera de la pantalla */
     width: 100%;
-    max-width: 450px; /* En PC crecerá hasta aquí de ancho */
-    height: auto;
-    max-height: 40vh; /* Crece en altura basándose en la pantalla, no se hace enano */
+    max-width: 450px; 
+    height: 100%; /* Se adapta al contenedor */
+    max-height: 40vh; /* Límite para que no se haga gigante en pantallas enormes */
     object-fit: contain; 
 }
 
 .calculating-text {
-    margin-top: 15px; margin-bottom: 5px; font-weight: 900; font-size: 1.1rem;
+    flex-shrink: 0; /* Blindaje: El texto NUNCA se encoge ni desaparece */
+    margin-top: 10px; margin-bottom: 5px; font-weight: 900; font-size: 1.1rem;
     text-align: center; text-transform: uppercase; letter-spacing: 1px;
     animation: textPulseColor 1.2s infinite alternate;
 }
 
 #btn-admin-panel {
-    display: none; margin-top: 10px; background: #0a2e52; color: white; border: none; 
+    flex-shrink: 0; /* Blindaje: El botón NUNCA se encoge ni se va fuera */
+    display: none; margin-top: 5px; margin-bottom: 5px; 
+    background: #0a2e52; color: white; border: none; 
     padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; max-width: 400px; font-weight: bold; 
 }
 
