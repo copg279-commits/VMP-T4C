@@ -37,16 +37,20 @@ header {
 
 /* --- CONTENEDOR CENTRAL --- */
 .container { 
-    flex: 1 1 auto; width: 100%; padding: 20px 15px 80px 15px; 
-    overflow-y: auto; display: flex; flex-direction: column; align-items: center;
+    flex: 1 1 0; /* AHORA: 0 para obligar a que ocupe solo el hueco real */
+    width: 100%; 
+    padding: 15px 15px 75px 15px; /* Ajuste preciso para no pisar el footer */
+    overflow: hidden; /* CERROJO: Prohibido hacer scroll vertical */
+    display: flex; flex-direction: column; align-items: center;
 }
 
-/* --- TARJETA BLANCA (NUEVO ORDEN FLEXIBLE) --- */
+/* --- TARJETA BLANCA --- */
 .card { 
     background: var(--white); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-    width: 100%; max-width: 900px; flex: 1 0 auto; 
-    display: flex; flex-direction: column; padding: 20px; gap: 15px;
-    min-height: 80vh; /* Asegura que siempre ocupe pantalla completa */
+    width: 100%; max-width: 900px; 
+    flex: 1 1 0; /* Obliga a la tarjeta a encogerse al alto de la pantalla */
+    display: flex; flex-direction: column; padding: 15px; gap: 10px;
+    overflow: hidden; /* Evita que los elementos internos se salgan */
 }
 
 /* --- PREGUNTAS Y BOTONES --- */
@@ -64,38 +68,33 @@ button.option-btn {
 }
 button.option-btn:active { background-color: var(--police-blue); transform: scale(0.98); }
 
-/* --- CONTENEDOR INFERIOR PEGADO ABAJO (BLINDADO) --- */
+/* --- CONTENEDOR INFERIOR PEGADO ABAJO --- */
 .bottom-wrapper {
-    flex: 1 1 0; /* Ocupa el espacio libre, pero permite encogerse */
-    min-height: 0; /* VITAL: Evita que fuerce el scroll vertical */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end; 
-    align-items: center;
-    width: 100%;
-    margin-top: 10px;
+    flex: 1 1 0; 
+    min-height: 0; /* VITAL: Permite que el bloque se reduzca */
+    display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+    width: 100%; margin-top: auto; 
 }
 
-/* --- POLICÍA PENSANDO (TAMAÑO MÁXIMO DINÁMICO) --- */
+/* --- POLICÍA PENSANDO (EL AMORTIGUADOR) --- */
 .thinking-cop-img {
     flex: 1 1 0; 
-    min-height: 0; 
-    width: 100%;
-    max-width: 450px; 
-    height: 100%; /* Ocupa absolutamente todo el hueco que quede libre */
+    min-height: 0; /* El secreto: Puede encogerse todo lo necesario */
+    width: 100%; max-width: 450px; 
     object-fit: contain; 
+    margin-bottom: 5px;
 }
 
 .calculating-text {
-    flex-shrink: 0; /* Blindaje: El texto NUNCA se encoge ni desaparece */
-    margin-top: 10px; margin-bottom: 5px; font-weight: 900; font-size: 1.1rem;
+    flex: 0 0 auto; /* BLINDADO: No se encoge nunca */
+    margin: 5px 0; font-weight: 900; font-size: 1rem;
     text-align: center; text-transform: uppercase; letter-spacing: 1px;
     animation: textPulseColor 1.2s infinite alternate;
 }
 
 #btn-admin-panel {
-    flex-shrink: 0; /* Blindaje: El botón NUNCA se encoge ni se va fuera */
-    display: none; margin-top: 5px; margin-bottom: 5px; 
+    flex: 0 0 auto; /* BLINDADO: No se encoge ni desaparece */
+    display: none; margin: 5px 0 0 0; 
     background: #0a2e52; color: white; border: none; 
     padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; max-width: 400px; font-weight: bold; 
 }
@@ -122,7 +121,7 @@ footer {
 .header-help { background-color: var(--police-light); }
 .modal-body { padding: 10px; overflow-y: auto; flex-grow: 1; min-height: 0; }
 .result-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.result-logo-img { height: 72px; width: 72px; object-fit: contain; } 
+.result-logo-img { height: 72px; width: 72px; object-fit: contain; transition: all 0.3s ease; } 
 .result-main-icon { font-size: 3rem; line-height: 1; }
 .result-main-title { text-align: center; font-size: 1.2rem; margin: 0 0 10px 0; color: #333; font-weight: 800; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 .table-plate-wrapper { display: flex; justify-content: space-between; align-items: stretch; gap: 10px; margin-bottom: 10px; }
@@ -177,14 +176,19 @@ footer {
 .tow-icon { height: 38px; width: auto; flex-shrink: 0; margin-left: 8px; }
 .btn-close-inf { width: 100%; padding: 12px; background: #444; color: white; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; border-radius: 0 0 12px 12px; flex-shrink: 0;}
 
+/* =========================================
+   MEDIA QUERY: PANTALLAS GRANDES (PC/TABLET)
+   ========================================= */
 @media (min-width: 768px) {
     header { height: 125px; padding: 15px 40px; }
     .header-logo { height: 100px; } 
     .header-titles h1 { font-size: 1.8rem; }
     .header-titles h2 { font-size: 1rem; }
+    
     .container { padding-top: 40px; }
     .card { padding: 40px; gap: 30px; }
     button.option-btn { padding: 20px; font-size: 1.1rem; }
+    
     .modal-content { max-width: 900px; }
     .result-logo-img { height: 120px; width: 120px; } 
     .inf-content-scroll { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
@@ -195,5 +199,5 @@ footer {
     .tow-icon { height: 60px; margin-left: 15px; } 
     .admin-opt-btn { font-size: 0.9rem; padding: 8px; }
     .mobile-break { display: none; }
-footer { font-size: 1rem; }
+    footer { font-size: 1rem; }
 }
