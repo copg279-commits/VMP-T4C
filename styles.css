@@ -54,40 +54,43 @@ header {
     width: 100%; 
     max-width: 100%; 
     margin: 0 auto; 
-    padding: 10px;
+    padding: 15px;
     overflow-y: auto; 
     display: flex; 
     flex-direction: column; 
     justify-content: center;
 }
 
+/* LA TARJETA AHORA TIENE ALTURA MÍNIMA PARA OCUPAR MÁS PANTALLA EN MÓVIL */
 .card { 
-    background: var(--white); border-radius: 12px; padding: 15px; 
+    background: var(--white); border-radius: 12px; padding: 20px 15px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%;
+    display: flex; flex-direction: column; justify-content: center; min-height: 55vh;
 }
 
-.question-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); margin-bottom: 15px; padding-bottom: 5px; }
-.question-title { color: var(--police-blue); font-size: 1.1rem; font-weight: 700; margin: 0; line-height: 1.2; }
+.question-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); margin-bottom: 20px; padding-bottom: 10px; }
+.question-title { color: var(--police-blue); font-size: 1.1rem; font-weight: 700; margin: 0; line-height: 1.3; }
 .help-btn-icon { background: transparent; border: 2px solid var(--police-light); color: var(--police-light); border-radius: 50%; width: 28px; height: 28px; font-weight: bold; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-.options-grid { display: flex; flex-direction: column; gap: 8px; }
+.options-grid { display: flex; flex-direction: column; gap: 10px; }
 
 button.option-btn { 
-    background-color: var(--police-light); color: var(--white); border: none; padding: 14px; 
-    border-radius: 8px; font-size: 0.95rem; cursor: pointer; text-align: left; 
+    background-color: var(--police-light); color: var(--white); border: none; padding: 16px; 
+    border-radius: 8px; font-size: 1rem; cursor: pointer; text-align: left; 
     display: flex; justify-content: space-between; align-items: center; font-weight: 600; 
 }
 button.option-btn:active { background-color: var(--police-blue); transform: scale(0.98); }
 
-.controls { margin-top: 15px; display: flex; gap: 10px; }
-.btn-control { padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; font-size: 0.95rem; }
+.controls { margin-top: 20px; display: flex; gap: 10px; }
+.btn-control { padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; font-size: 1rem; }
 .btn-back { background-color: #90a4ae; color: #37474f; }
 .btn-reset { background-color: var(--accent); color: #000; }
 
+/* FOOTER AMPLIADO COMO PEDISTE ANTES */
 footer {
     flex: 0 0 auto; background: var(--police-blue); color: white; text-align: center;
-    padding: 8px; font-size: 0.7rem; font-weight: 600;
-    z-index: 10; padding-bottom: max(8px, env(safe-area-inset-bottom));
+    padding: 16px; font-size: 0.95rem; font-weight: 600;
+    z-index: 10; padding-bottom: max(16px, env(safe-area-inset-bottom));
 }
 
 /* --- MODAL --- */
@@ -117,50 +120,19 @@ footer {
 
 /* Logos del Resultado */
 .result-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.result-logo-img { 
-    height: 72px; width: 72px; 
-    object-fit: contain; transition: all 0.3s ease;
-} 
+.result-logo-img { height: 72px; width: 72px; object-fit: contain; transition: all 0.3s ease; } 
 .result-main-icon { font-size: 3rem; line-height: 1; }
 .result-main-title { text-align: center; font-size: 1.2rem; margin: 0 0 10px 0; color: #333; font-weight: 800; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 
-/* --- SOLUCIÓN TÉCNICA: TABLA E IMAGEN ALINEADAS --- */
-.table-plate-wrapper { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: stretch; /* ESTO HACE QUE AMBOS LADOS TENGAN LA MISMA ALTURA */
-    gap: 10px; 
-    margin-bottom: 10px; 
-}
-
-.table-container { 
-    flex: 1; 
-}
-
-.legal-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    font-size: 0.85rem; 
-    border: 1px solid #e0e0e0; 
-}
-
+/* TABLA E IMAGEN ALINEADAS */
+.table-plate-wrapper { display: flex; justify-content: space-between; align-items: stretch; gap: 10px; margin-bottom: 10px; }
+.table-container { flex: 1; }
+.legal-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; border: 1px solid #e0e0e0; }
 .legal-table th { text-align: left; padding: 5px; background-color: #f5f7fa; width: 1%; white-space: nowrap; border-bottom: 1px solid #ddd; color: var(--police-blue); }
 .legal-table td { padding: 5px; border-bottom: 1px solid #eee; color: #444; font-weight: 600; }
 
-/* CONTENEDOR DE IMAGEN "INTELIGENTE" */
-#res-plate-container { 
-    flex: 0 0 45%; 
-    position: relative; 
-}
-
-#res-plate-container img { 
-    position: absolute; 
-    top: 0; left: 0; bottom: 0; right: 0; 
-    margin: auto; 
-    max-width: 100%; 
-    max-height: 100%; /* CLAVE: Nunca más alta que el contenedor (la tabla) */
-    object-fit: contain; 
-}
+#res-plate-container { flex: 0 0 45%; position: relative; }
+#res-plate-container img { position: absolute; top: 0; left: 0; bottom: 0; right: 0; margin: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
 
 .legal-box { padding: 10px; border-radius: 6px; font-size: 0.85rem; line-height: 1.4; text-align: left; margin-top: 5px; }
 .box-penal { background-color: #ffebee; border-left: 4px solid var(--danger); color: #c62828; }
@@ -175,115 +147,49 @@ footer {
 .btn-modal-new { flex: 1; padding: 10px; background: var(--police-blue); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
 
 /* --- ESTILOS AYUDA VMP ANTIGUOS --- */
-.help-toggle-btn {
-    background-color: var(--warning-orange); color: white; width: 100%; padding: 12px;
-    border: none; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* CLASE PARA SALTO DE LÍNEA EN MÓVIL */
+.help-toggle-btn { background-color: var(--warning-orange); color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 .mobile-break { display: inline; }
-
-.help-toggle-content {
-    display: none; background: #fff3e0; padding: 10px; border-radius: 8px; margin-top: 5px;
-    border: 1px solid #ffe0b2; font-size: 0.85rem; color: #333; animation: fadeIn 0.3s;
-}
+.help-toggle-content { display: none; background: #fff3e0; padding: 10px; border-radius: 8px; margin-top: 5px; border: 1px solid #ffe0b2; font-size: 0.85rem; color: #333; animation: fadeIn 0.3s; }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
 .legacy-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; font-size: 0.8rem; }
 .legacy-table th { background: #ffcc80; padding: 5px; border: 1px solid #eda25e; color: #333; }
 .legacy-table td { padding: 5px; border: 1px solid #eda25e; text-align: center; font-weight: bold; }
-
-.legacy-advice {
-    background: white; padding: 10px; border-left: 4px solid #d32f2f; margin-top: 10px; 
-    font-style: italic; color: #444; border-radius: 0 4px 4px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
+.legacy-advice { background: white; padding: 10px; border-left: 4px solid #d32f2f; margin-top: 10px; font-style: italic; color: #444; border-radius: 0 4px 4px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.disclaimer-note { padding: 10px; background-color: #ffebee; color: #d32f2f; font-size: 0.85rem; text-align: center; border-radius: 6px; border: 1px solid #ffcdd2; font-weight: bold;}
 
 /* --- ESTILOS INFRACCIONES --- */
-.infraction-box { 
-    background: white; padding: 0; border-radius: 12px; width: 98%; max-width: 800px; 
-    border-top: 6px solid #d32f2f; display: flex; flex-direction: column; max-height: 98dvh; overflow: hidden; 
-}
+.infraction-box { background: white; padding: 0; border-radius: 12px; width: 98%; max-width: 800px; border-top: 6px solid #d32f2f; display: flex; flex-direction: column; max-height: 98dvh; overflow: hidden; }
 .infraction-title { color: #d32f2f; font-size: 1rem; font-weight: 800; padding: 8px; text-align: center; background: #fff; border-bottom: 1px solid #eee; }
 
 .inf-toggle-container { display: flex; background: #f5f5f5; padding: 4px; gap: 4px; border-bottom: 1px solid #ddd; }
 .inf-toggle-btn { flex: 1; padding: 8px; border: none; font-weight: bold; font-size: 0.8rem; border-radius: 4px; background: transparent; color: #666; cursor: pointer; }
 .inf-toggle-btn.active { background: #d32f2f; color: white; }
 
-.inf-content-scroll { 
-    overflow-y: auto; padding: 8px; flex-grow: 1; 
-    display: flex; flex-direction: column; gap: 8px;
-}
-
-.inf-card { 
-    border: 1px solid #ccc; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
-    display: flex; flex-direction: column;
-}
-
-.inf-card-header { 
-    padding: 8px 12px; font-size: 0.9rem; font-weight: 800; color: white; text-transform: uppercase;
-    display: flex; flex-direction: column; gap: 5px;
-}
-
+.inf-content-scroll { overflow-y: auto; padding: 8px; flex-grow: 1; display: flex; flex-direction: column; gap: 8px; }
+.inf-card { border: 1px solid #ccc; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+.inf-card-header { padding: 8px 12px; font-size: 0.9rem; font-weight: 800; color: white; text-transform: uppercase; display: flex; flex-direction: column; gap: 5px; }
 .header-admin { background-color: var(--inf-admin-color); }
 .header-soa { background-color: var(--inf-soa-color); }
 
-/* SELECTOR DE OPCIONES ADMIN */
-.admin-options-container {
-    display: flex; width: 100%; background: rgba(0,0,0,0.15); border-radius: 6px; padding: 3px; gap: 3px;
-}
-.admin-opt-btn {
-    flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.7); 
-    font-size: 0.7rem; font-weight: bold; padding: 6px 2px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
-}
-.admin-opt-btn.active {
-    background: white; color: var(--inf-admin-color); box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+.admin-options-container { display: flex; width: 100%; background: rgba(0,0,0,0.15); border-radius: 6px; padding: 3px; gap: 3px; }
+.admin-opt-btn { flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.7); font-size: 0.7rem; font-weight: bold; padding: 6px 2px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+.admin-opt-btn.active { background: white; color: var(--inf-admin-color); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
 .inf-card-body { padding: 8px; background-color: #fff; flex-grow: 1; display: flex; flex-direction: column; }
-
-/* Grid flexible para evitar cortes */
-.inf-grid-row { 
-    display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 6px; font-size: 0.85rem; gap: 10px;
-}
+.inf-grid-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; font-size: 0.85rem; gap: 10px; }
 .inf-item { display: flex; flex-direction: column; }
-
-/* Izquierda (Normativa/Importe): Más ancho */
 .inf-item:first-child { flex: 1 1 65%; }
-
-/* Derecha (Opción/Reducido): Alineado derecha, menos ancho */
 .inf-item:last-child { flex: 1 1 30%; text-align: right; align-items: flex-end; }
-
 .inf-label { font-size: 0.7rem; color: #666; text-transform: uppercase; margin-bottom: 2px; }
 .inf-val { font-weight: 800; color: #333; }
 .inf-val.red { color: #d32f2f; }
 .inf-val.green { color: #2e7d32; }
+.inf-text { background: #f9f9f9; padding: 8px; border-radius: 6px; border: 1px solid #eee; font-family: monospace; font-size: 0.8rem; margin-bottom: 8px; color: #333; line-height: 1.3; flex-grow: 1; }
 
-.inf-text { 
-    background: #f9f9f9; padding: 8px; border-radius: 6px; border: 1px solid #eee; 
-    font-family: monospace; font-size: 0.8rem; margin-bottom: 8px; color: #333; line-height: 1.3; 
-    flex-grow: 1;
-}
-
-/* MEDIDA CON GRÚA */
-.measure-box { 
-    background-color: #ffebee; color: #c62828; font-weight: 800; font-size: 0.8rem; 
-    padding: 6px 10px;
-    border-radius: 6px; border: 2px solid #ef9a9a; 
-    display: flex; align-items: center; justify-content: space-between;
-    min-height: 50px; 
-    overflow: hidden;
-}
-
-.tow-icon { 
-    height: 38px;
-    width: auto; flex-shrink: 0; margin-left: 8px; 
-}
-
+.measure-box { background-color: #ffebee; color: #c62828; font-weight: 800; font-size: 0.8rem; padding: 6px 10px; border-radius: 6px; border: 2px solid #ef9a9a; display: flex; align-items: center; justify-content: space-between; min-height: 50px; overflow: hidden; }
+.tow-icon { height: 38px; width: auto; flex-shrink: 0; margin-left: 8px; }
 .btn-close-inf { width: 100%; padding: 12px; background: #444; color: white; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; border-radius: 0 0 12px 12px; flex-shrink: 0;}
-
-.disclaimer-note { margin-top: 15px; padding: 10px; background-color: #ffebee; color: #d32f2f; font-size: 0.85rem; text-align: center; border-radius: 6px; border: 1px solid #ffcdd2; }
 
 /* =========================================
    MEDIA QUERY: PANTALLAS GRANDES (PC/TABLET)
@@ -293,33 +199,92 @@ footer {
     .header-logo { height: 100px; } 
     .header-titles h1 { font-size: 1.8rem; }
     .header-titles h2 { font-size: 1rem; }
-
     .container { max-width: 900px; justify-content: flex-start; padding-top:30px;}
-    .card { padding: 30px; }
+    .card { padding: 40px; min-height: 60vh; }
     button.option-btn { padding: 20px; font-size: 1.1rem; }
-
     .modal-content { max-width: 900px; }
-    /* Logos grandes en el dictamen de PC */
     .result-logo-img { height: 120px; width: 120px; } 
-    
-    /* Infracciones: EN PC TAMBIÉN UNA DEBAJO DE OTRA */
-    .inf-content-scroll { 
-        display: flex;
-        flex-direction: column;
-        gap: 15px; 
-        overflow-y: auto;
-    }
-    
+    .inf-content-scroll { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
     .inf-card { height: auto; margin-bottom: 0; }
-    
-    /* Textos y Grúa grandes en PC */
     .inf-val { font-size: 1rem; }
     .inf-text { font-size: 0.95rem; }
     .measure-box { font-size: 1rem; padding: 15px; min-height: 70px; }
     .tow-icon { height: 60px; margin-left: 15px; } 
-    
     .admin-opt-btn { font-size: 0.9rem; padding: 8px; }
-
-    /* OCULTAR SALTO DE LÍNEA EN PC */
     .mobile-break { display: none; }
+}
+/* --- NUEVOS ESTILOS: POLICÍA PENSANDO (ADAPTABLE Y ANIMADO) --- */
+
+.card {
+    min-height: auto; 
+    flex-grow: 1; /* La tarjeta crece para ocupar el contenedor */
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px;
+    gap: 10px;
+}
+
+/* El contenedor principal del estado */
+.calculating-status {
+    flex-grow: 1; /* Se traga todo el espacio vertical disponible */
+    min-height: 0; /* CRÍTICO: Permite que la imagen se comprima si hay muchas preguntas */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 15px;
+}
+
+/* Imagen adaptable */
+.thinking-cop-img {
+    width: 100%;
+    height: 100%; /* Intenta ocupar todo el hueco */
+    max-height: 300px; /* Crecerá un montón, pero le ponemos un tope para que no se vea gigantesca en tablets */
+    object-fit: contain; /* Mantiene la proporción sin deformarse */
+    margin-bottom: auto; /* Empuja automáticamente el texto hacia abajo */
+}
+
+/* Texto animado */
+.calculating-text {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 900;
+    font-size: 1.15rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    
+    /* Aplica la animación de color */
+    animation: textPulseColor 1.2s infinite alternate;
+}
+
+/* Animación 1: Cambia de azul oscuro oficial a un azul claro brillante */
+@keyframes textPulseColor {
+    0% { color: var(--police-blue); opacity: 1; text-shadow: none; }
+    100% { color: #2196F3; opacity: 0.8; text-shadow: 0 0 8px rgba(33, 150, 243, 0.3); }
+}
+
+/* Animación 2: Los puntitos suspensivos (...) se mueven solos */
+.dots::after {
+    content: '';
+    animation: loadingDots 1.5s infinite steps(4, end);
+}
+
+@keyframes loadingDots {
+    0% { content: ''; }
+    25% { content: '.'; }
+    50% { content: '..'; }
+    75% { content: '...'; }
+    100% { content: ''; }
+}
+
+/* Aseguramos que los controles se queden al fondo */
+.controls {
+    margin-top: 0; 
+    padding-top: 10px;
+}
+
+/* En PC hacemos que la imagen no sea tan exageradamente grande */
+@media (min-width: 768px) {
+    .card { min-height: 65vh; }
+    .thinking-cop-img { max-height: 220px; }
 }
