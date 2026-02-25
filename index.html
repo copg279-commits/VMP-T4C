@@ -7,110 +7,113 @@
     <link rel="stylesheet" href="styles.css">
     
     <style>
-        /* --- ESTILOS PANTALLA DE LOGIN MODERNA --- */
+  /* --- ESTILOS PANTALLA DE LOGIN DARK --- */
         #login-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: linear-gradient(135deg, #0a2e52 0%, #154c79 100%); /* Degradado elegante */
+            background: linear-gradient(135deg, #041222 0%, #0a2e52 100%); 
             z-index: 9999; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            padding: 20px;
+            padding: 15px; box-sizing: border-box;
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px 20px;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 25px 15px;
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
-            animation: fadeIn 0.5s ease-out;
+            color: #ffffff;
+            box-sizing: border-box;
         }
 
-        .login-logos {
-            display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; align-items: center;
-        }
-        .login-logo-img { height: 60px; width: auto; object-fit: contain; }
+        .login-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; gap: 10px; }
+        .login-logo-img { height: 45px; width: auto; object-fit: contain; flex-shrink: 0; }
+        .login-titles-col { flex-grow: 1; }
+        .login-title { margin: 0; font-size: 1.25rem; font-weight: 900; }
+        .login-subtitle { margin: 2px 0 0 0; font-size: 0.75rem; color: #aaa; text-transform: uppercase; }
 
-        .login-title { margin: 0; color: #0a2e52; font-weight: 900; font-size: 1.5rem; letter-spacing: 1px; }
-        .login-subtitle { margin: 5px 0 20px 0; color: #555; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;}
+        .help-btn { background: #1976d2; color: white; margin-bottom: 15px; }
+        .google-btn { background: #fff; color: #444; margin-bottom: 15px; }
+        .req-btn { background: #ff9800; color: white; }
+        
+        .help-btn, .google-btn, .req-btn {
+            border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.95rem;
+        }
 
         .login-help {
-            background: #e3f2fd; color: #0d47a1; padding: 12px; border-radius: 8px; font-size: 0.85rem;
-            margin-bottom: 25px; text-align: left; line-height: 1.4; border-left: 4px solid #1976d2;
+            background: rgba(25, 118, 210, 0.2); color: #e3f2fd; padding: 12px; border-radius: 8px; 
+            font-size: 0.85rem; margin-bottom: 15px; text-align: left; display: none; border-left: 4px solid #1976d2;
         }
 
-        /* Botón Google Moderno */
-        .google-btn { 
-            background: #fff; color: #444; border: 1px solid #ddd; 
-            padding: 12px 20px; font-size: 1rem; font-weight: bold; border-radius: 8px; 
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; 
-            width: 100%; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .google-btn:active { transform: scale(0.98); background: #f5f5f5; }
+        .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #fff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 10px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(3600deg); } }
+        .status-txt { margin-top: 15px; font-size: 0.85rem; font-weight: bold; color: #ddd; }
+        .app-footer-login { margin-top: 30px; color: #fff; font-size: 1.1rem; font-weight: bold; text-align: center; }
 
-        /* Botón Solicitar Acceso */
-        .req-btn { 
-            background: #ff9800; color: white; border: none; 
-            padding: 12px 20px; font-size: 1rem; font-weight: bold; border-radius: 8px; 
-            cursor: pointer; margin-top: 15px; width: 100%; display: none;
-            box-shadow: 0 4px 6px rgba(255, 152, 0, 0.3);
-        }
-
-        /* Spinner de Carga */
-        .spinner {
-            border: 4px solid #f3f3f3; border-top: 4px solid #0a2e52; border-radius: 50%;
-            width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .status-txt { margin-top: 15px; font-size: 0.9rem; font-weight: bold; min-height: 20px; color: #333; }
-
-        .app-footer-login { margin-top: 30px; color: rgba(255,255,255,0.6); font-size: 0.75rem; }
+        /* Estilos del Panel Admin y Modales nuevos */
+        #btn-admin-panel { display: none; margin: 15px auto; background: #0a2e52; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; max-width: 400px; font-weight: bold; }
+        .admin-list-item { background: #f4f4f4; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: #333; text-align: left; }
+        .form-group { margin-bottom: 12px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.85rem; color: #333; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
         /* CONTENEDOR APP PRINCIPAL (Oculto) */
         #app-content {
             display: none; flex-direction: column; height: 100%; width: 100%; flex: 1; overflow: hidden; 
         }
+
+        /* --- ESTILOS NUEVOS PARA FORMULARIOS Y ADMIN --- */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #0a2e52; font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 1rem; }
+        
+        .admin-list-item { background: #f9f9f9; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e0e0e0; text-align: left;}
+        .admin-list-info p { margin: 2px 0; font-size: 0.85rem; color: #333; }
+        .admin-list-info strong { font-size: 1rem; color: #0a2e52; }
+        
+        #btn-admin-panel { display: none; margin: 15px auto; background: #0a2e52; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        
-        <div class="login-logos">
-            <img src="T4C.png" alt="Judicial" class="login-logo-img">
-            <img src="logogad.png" alt="GAD" class="login-logo-img">
-        </div>
-
+  <div id="login-screen">
         <div class="login-card">
-            <h1 class="login-title">TOOLS FOR COPS</h1>
-            <h3 class="login-subtitle">CONTROL DE ACCESO</h3>
+            
+            <div class="login-header-row">
+                <img src="T4C.png" class="login-logo-img">
+                <div class="login-titles-col">
+                    <h1 class="login-title">TOOLS FOR COPS</h1>
+                    <h2 class="login-subtitle">CONTROL ACCESO</h2>
+                </div>
+                <img src="logogad.png" class="login-logo-img">
+            </div>
 
             <div id="loading-state">
                 <div class="spinner"></div>
-                <p style="color:#666; font-size:0.9rem;">Verificando sesión...</p>
+                <p style="color:#aaa; font-size:0.9rem;">Verificando sesión...</p>
             </div>
 
             <div id="login-actions" style="display:none;">
-                <div class="login-help">
-                    <strong>ℹ️ ¿Cómo entrar?</strong><br>
+                <button type="button" class="help-btn" onclick="let h=document.getElementById('login-help-box'); h.style.display=(h.style.display==='block')?'none':'block'">ℹ️ AYUDA E INSTRUCCIONES</button>
+                
+                <div id="login-help-box" class="login-help">
                     1. Pulsa en <b>Identificarse con Google</b>.<br>
-                    2. Si no tienes permiso, aparecerá un botón para <b>Solicitar Acceso</b>.
+                    2. Si no tienes permiso, pulsa en <b>Solicitar Acceso</b> y rellena el formulario.
                 </div>
 
-                <button id="btn-login" class="google-btn">
+                <button id="btn-login" class="google-btn" type="button">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="22">
                     Identificarse con Google
                 </button>
 
-                <button id="btn-request" class="req-btn">📝 SOLICITAR ACCESO AL SISTEMA</button>
+               <button type="button" class="req-btn" onmousedown="var m = document.getElementById('request-modal'); if(m){ m.style.display='flex'; m.style.zIndex='999999'; } else { alert('¡CUIDADO! Has borrado el código del modal de tu archivo HTML.'); }">📝 SOLICITAR ACCESO AL SISTEMA</button>
             </div>
             
             <div id="login-status" class="status-txt"></div>
         </div>
-
         <div class="app-footer-login">T4C Tools For Cops © 2026 | GAD © 2026</div>
     </div>
 
@@ -125,16 +128,20 @@
         </header>
 
         <div class="container">
-     <div class="card">
+            <div class="card">
                 <div id="question-area"></div>
                 
                 <div class="card-filler-image"></div>
-         <div class="calculating-status">
+                <div class="calculating-status">
                     <img src="polipensador.png" alt="Policía pensando" class="thinking-cop-img">
                     <p class="calculating-text">CALCULANDO CATEGORÍA<span class="dots"></span></p>
                 </div>
 
-        <footer>T4C Tools For Cops © 2026 &nbsp;|&nbsp; GAD © 2026</footer>
+                <button id="btn-admin-panel">👮 PANEL DE ADMINISTRADOR</button>
+
+                <footer>T4C Tools For Cops © 2026 &nbsp;|&nbsp; GAD © 2026</footer>
+            </div>
+        </div>
     </div>
 
     <div id="result-modal" class="modal">
@@ -170,7 +177,7 @@
         </div>
     </div>
 
-<div id="help-modal" class="modal">
+    <div id="help-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header-strip header-help">¿CÓMO FUNCIONA?</div>
             <div class="modal-body">
@@ -243,28 +250,64 @@
         </div>
     </div>
 
+    <div id="request-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header-strip" style="background:#ff9800;">SOLICITAR ACCESO</div>
+            <div class="modal-body">
+                <div class="form-group"><label>Correo</label><input type="email" id="req-email" placeholder="Escribe tu correo de Google"></div>
+                <div class="form-group"><label>Nombre</label><input type="text" id="req-nombre"></div>
+                <div class="form-group">
+                    <label>Cuerpo</label>
+                    <select id="req-cuerpo">
+                        <option value="Policía Local">Policía Local</option>
+                        <option value="Policía Nacional">Policía Nacional</option>
+                        <option value="Guardia Civil">Guardia Civil</option>
+                        <option value="Mossos d'Esquadra">Mossos d'Esquadra</option>
+                        <option value="Ertzaintza">Ertzaintza</option>
+                        <option value="Policía Foral">Policía Foral</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Ciudad</label><input type="text" id="req-ciudad"></div>
+            </div>
+            <div class="modal-fixed-bottom">
+                <button style="width:100%; background:#ff9800; color:white; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="window.submitRequest()">ENVIAR SOLICITUD</button>
+                <button style="width:100%; margin-top:10px; padding:10px; background:#ccc; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('request-modal').style.display='none'">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header-strip" style="background-color: #0a2e52;">PANEL DE ADMINISTRADOR</div>
+            <div class="modal-body" id="admin-list-container" style="max-height: 60vh; overflow-y: auto;"></div>
+            <div class="modal-fixed-bottom">
+                <button style="width:100%; padding: 12px; background:#ccc; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('admin-modal').style.display='none'">CERRAR PANEL</button>
+            </div>
+        </div>
+    </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // -----------------------------------------------------------
-        // 1. PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE
-        // -----------------------------------------------------------
- const firebaseConfig = {
-  apiKey: "AIzaSyAYKu2Gx8MgIk9tYYx6BstERQsitKPQIiU",
-  authDomain: "t4c-gad.firebaseapp.com",
-  projectId: "t4c-gad",
-  storageBucket: "t4c-gad.firebasestorage.app",
-  messagingSenderId: "765902351715",
-  appId: "1:765902351715:web:5be95297e94984ecb07756"
-};
-        // -----------------------------------------------------------
+        // CONFIGURACIÓN DE FIREBASE
+        const firebaseConfig = {
+          apiKey: "AIzaSyAYKu2Gx8MgIk9tYYx6BstERQsitKPQIiU",
+          authDomain: "t4c-gad.firebaseapp.com",
+          projectId: "t4c-gad",
+          storageBucket: "t4c-gad.firebasestorage.app",
+          messagingSenderId: "765902351715",
+          appId: "1:765902351715:web:5be95297e94984ecb07756"
+        };
 
         const appFirebase = initializeApp(firebaseConfig);
         const auth = getAuth(appFirebase);
         const db = getFirestore(appFirebase);
         const provider = new GoogleAuthProvider();
+
+        // VARIABLES DE TELEGRAM
+        const TELEGRAM_TOKEN = "7891665247:AAEeBUbpov56RKqQQBoLKU42ANvULrLFQzY"; 
+        const CHAT_ID = "381018459"; 
 
         const ui = {
             loginScreen: document.getElementById('login-screen'),
@@ -272,23 +315,18 @@
             loading: document.getElementById('loading-state'),
             actions: document.getElementById('login-actions'),
             btnLogin: document.getElementById('btn-login'),
-            btnRequest: document.getElementById('btn-request'),
             status: document.getElementById('login-status')
         };
 
-        // 1. ESCUCHAR ESTADO DE SESIÓN (AUTO-LOGIN)
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Usuario detectado (ya estaba logueado o acaba de entrar)
                 checkUser(user);
             } else {
-                // Nadie logueado: Quitar spinner, Mostrar botones
                 ui.loading.style.display = 'none';
                 ui.actions.style.display = 'block';
             }
         });
 
-        // 2. BOTÓN LOGIN
         ui.btnLogin.addEventListener('click', () => {
             ui.actions.style.display = 'none';
             ui.loading.style.display = 'block';
@@ -297,79 +335,165 @@
                 console.error(e);
                 ui.loading.style.display = 'none';
                 ui.actions.style.display = 'block';
-                ui.status.innerText = "Error: " + e.message;
+                if (e.code === 'auth/popup-closed-by-user') {
+                    ui.status.innerText = "Operación cancelada.";
+                } else {
+                    ui.status.innerText = "Error: " + e.message;
+                }
             });
         });
 
-        // 3. VERIFICAR PERMISOS
         async function checkUser(user) {
             ui.actions.style.display = 'none';
             ui.loading.style.display = 'block';
-            ui.status.innerText = ""; // Limpiar texto
+            ui.status.innerText = ""; 
             
             const ref = doc(db, "users", user.email);
             try {
                 const snap = await getDoc(ref);
                 if (snap.exists()) {
                     if (snap.data().autorizado === true) {
-                        enterApp(); // ✅ TIENE PERMISO
+                        enterApp(user.email);
                     } else {
-                        // ⛔ PENDIENTE
                         ui.loading.style.display = 'none';
-                        ui.status.innerHTML = `<span style="color:#d32f2f">⚠️ Solicitud PENDIENTE.</span><br>Usuario: <b>${user.email}</b><br>Espera a ser autorizado.`;
+                        ui.status.innerHTML = `<span style="color:#ff9800">⚠️ Solicitud pendiente de aprobación.</span><br>Usuario: <b>${user.email}</b>`;
                         showLogout();
                     }
                 } else {
-                    // ⛔ NO REGISTRADO -> MOSTRAR SOLICITUD
                     ui.loading.style.display = 'none';
-                    ui.status.innerHTML = `Usuario no registrado: <b>${user.email}</b>`;
-                    ui.btnRequest.style.display = 'block'; // Mostrar solo botón solicitar
-                    ui.btnRequest.onclick = () => requestAccess(user);
+                    ui.actions.style.display = 'block'; 
+                    ui.status.innerHTML = `Usuario no registrado: <b>${user.email}</b><br>Pulsa en SOLICITAR ACCESO.`;
+                    document.getElementById('req-email').value = user.email; 
                     showLogout();
                 }
             } catch (e) {
                 console.error(e);
                 ui.loading.style.display = 'none';
-                ui.status.innerText = "Error de conexión con la Base de Datos.";
+                ui.status.innerText = "Error de conexión con la BD.";
                 showLogout();
             }
         }
 
-        // 4. SOLICITAR ACCESO
-        async function requestAccess(user) {
-            ui.btnRequest.style.display = 'none';
+      // FUNCIÓN DEL BOTÓN "ENVIAR SOLICITUD"
+        window.submitRequest = async () => {
+            const email = document.getElementById('req-email').value.trim();
+            const nombre = document.getElementById('req-nombre').value.trim();
+            const cuerpo = document.getElementById('req-cuerpo').value;
+            const ciudad = document.getElementById('req-ciudad').value.trim();
+
+            // 1. Validar que el correo y los datos no estén vacíos
+            if(!email || !nombre || !cuerpo || !ciudad) {
+                alert("Por favor, rellena TODOS los campos (incluido el correo).");
+                return;
+            }
+
+            document.getElementById('request-modal').style.display = 'none';
+            ui.actions.style.display = 'none';
+            ui.loading.style.display = 'block';
             ui.status.innerText = "Enviando solicitud...";
+
             try {
-                await setDoc(doc(db, "users", user.email), {
-                    email: user.email,
-                    autorizado: false,
+                // 2. Guardar en Firebase (ahora sí tiene el email válido)
+                await setDoc(doc(db, "users", email), {
+                    email: email, 
+                    nombre: nombre, 
+                    cuerpo: cuerpo, 
+                    ciudad: ciudad, 
+                    autorizado: false, 
                     fecha: new Date().toISOString()
                 });
-                ui.status.innerHTML = `<span style="color:#2e7d32">✅ Solicitud enviada correctamente.</span><br>Avisa al administrador.`;
-            } catch (e) {
-                ui.status.innerText = "Error al guardar solicitud.";
-            }
-        }
 
-        function enterApp() {
+                // 3. Enviar a Telegram
+                const mensaje = `🚨 *NUEVA SOLICITUD T4C* 🚨\n\n👤 *Nombre:* ${nombre}\n👮 *Cuerpo:* ${cuerpo}\n📍 *Ciudad:* ${ciudad}\n📧 *Email:* ${email}`;
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: mensaje, parse_mode: 'Markdown' })
+                });
+
+                ui.loading.style.display = 'none';
+                ui.status.innerHTML = `<span style="color:#2e7d32">✅ Solicitud enviada.</span><br>Avisa al administrador.`;
+            } catch (e) {
+                console.error(e);
+                ui.loading.style.display = 'none';
+                ui.status.innerText = "Error al enviar la solicitud.";
+            }
+        };
+
+        function enterApp(email) {
             setTimeout(() => {
                 ui.loginScreen.style.display = 'none';
                 ui.appContent.style.display = 'flex'; 
+                
+                // Si entra el Administrador, le inyectamos el botón directamente
+                if (email === "copg279@gmail.com") {
+                    let btnAdmin = document.createElement('button');
+                    btnAdmin.innerHTML = '👮 PANEL DE ADMINISTRADOR';
+                    btnAdmin.style.cssText = 'display:block; margin:15px auto; background:#0a2e52; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:bold; width:90%; max-width:400px;';
+                    btnAdmin.onclick = window.loadAdminPanel;
+                    document.querySelector('.card').appendChild(btnAdmin);
+                }
                 window.dispatchEvent(new Event('auth-success')); 
             }, 800);
         }
+
+        // PANEL DE ADMINISTRADOR
+        window.loadAdminPanel = async () => {
+            const modal = document.getElementById('admin-modal');
+            const container = document.getElementById('admin-list-container');
+            modal.style.display = 'flex';
+            container.innerHTML = '<div class="spinner"></div><p style="text-align:center; color:#333;">Buscando...</p>';
+
+            try {
+                const q = query(collection(db, "users"), where("autorizado", "==", false));
+                const querySnapshot = await getDocs(q);
+                
+                container.innerHTML = '';
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p style="text-align:center; padding: 20px; color:#555;">No hay solicitudes pendientes.</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const div = document.createElement('div');
+                    div.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;';
+                    div.innerHTML = `
+                        <div style="color:#333; text-align:left;">
+                            <p style="margin:0;"><strong>${data.nombre || 'Sin Nombre'}</strong></p>
+                            <p style="margin:0; font-size:0.85rem;">${data.cuerpo} - ${data.ciudad}</p>
+                            <p style="margin:0; font-size:0.75rem; color:#666;">${data.email}</p>
+                        </div>
+                        <button style="background:#2e7d32; color:white; border:none; padding:8px 12px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="window.approveUser('${data.email}')">✅ Aprobar</button>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch(e) {
+                container.innerHTML = '<p style="color:red; text-align:center;">Error al cargar.</p>';
+                console.error(e);
+            }
+        };
+
+        window.approveUser = async (email) => {
+            try {
+                await updateDoc(doc(db, "users", email), { autorizado: true });
+                alert(`✅ Usuario ${email} aprobado.`);
+                window.loadAdminPanel(); 
+            } catch(e) {
+                alert("Error al aprobar.");
+                console.error(e);
+            }
+        };
 
         function showLogout() {
             if(!document.getElementById('tmp-logout')) {
                 let btn = document.createElement('button');
                 btn.id='tmp-logout'; btn.innerText='(Cerrar sesión)';
-                btn.style.cssText='background:none; border:none; color:#eee; margin-top:15px; text-decoration:underline; cursor:pointer; font-size:0.85rem;';
-                btn.onclick = window.logout;
+                btn.style.cssText='background:none; border:none; color:#ddd; margin-top:20px; text-decoration:underline; cursor:pointer; font-size:0.85rem;';
+                btn.onclick = () => signOut(auth).then(() => location.reload());
                 document.getElementById('login-screen').appendChild(btn);
             }
         }
-
-        window.logout = () => signOut(auth).then(() => location.reload());
+    </script>
     </script>
 
     <script src="app.js"></script>
