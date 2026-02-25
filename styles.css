@@ -78,12 +78,12 @@ button.option-btn:active { background-color: var(--police-blue); transform: scal
 
 /* --- POLICÍA PENSANDO (AMORTIGUADOR INTELIGENTE) --- */
 .thinking-cop-img {
-    flex: 1 1 0; /* Absorbe el alto disponible */
-    min-height: 0; /* Si falta espacio, se encoge en lugar de echar al botón fuera de la pantalla */
+    flex: 1 1 0; 
+    min-height: 0; 
     width: 100%;
     max-width: 450px; 
-    height: 100%; /* Se adapta al contenedor */
-    max-height: 40vh; /* Límite para que no se haga gigante en pantallas enormes */
+    height: 100%; 
+    max-height: 25vh; /* <--- REDUCIDO PARA MÓVIL (Deja espacio al botón Admin) */
     object-fit: contain; 
 }
 
@@ -196,5 +196,6 @@ footer {
     .tow-icon { height: 60px; margin-left: 15px; } 
     .admin-opt-btn { font-size: 0.9rem; padding: 8px; }
     .mobile-break { display: none; }
-    footer { font-size: 1rem; }
+footer { font-size: 1rem; }
+    .thinking-cop-img { max-height: 40vh; } /* <--- RECUPERA EL TAMAÑO EN ORDENADOR */
 }
