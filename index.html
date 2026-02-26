@@ -227,7 +227,7 @@
                 </div>
                 <div class="admin-nav-btns">
                     <button id="nav-pending" class="btn-admin-nav" onclick="window.loadAdminPanel()">SOLICITUDES</button>
-                    <button id="nav-ranking" class="btn-admin-nav" onclick="window.loadVisitsRanking()">RANKING</button>
+                    <button id="nav-ranking" class="btn-admin-nav" onclick="window.loadVisitsRanking()">USUARIOS</button>
                 </div>
                 <div id="admin-list-container" style="max-height: 40vh; overflow-y: auto; border: 1px solid #eee; padding: 5px; border-radius: 5px;"></div>
             </div>
@@ -314,29 +314,57 @@
             } catch (e) { console.error(e); ui.loading.style.display = 'none'; ui.status.innerText = "Error de conexión con la BD."; showLogout(); }
         }
 
-        window.submitRequest = async () => {
+      window.submitRequest = async () => {
             const email = document.getElementById('req-email').value.trim();
             const nombre = document.getElementById('req-nombre').value.trim();
             const cuerpo = document.getElementById('req-cuerpo').value;
             const ciudad = document.getElementById('req-ciudad').value.trim();
 
-            if(!email || !nombre || !cuerpo || !ciudad) { alert("Por favor, rellena TODOS los campos."); return; }
+            if(!email || !nombre || !cuerpo || !ciudad) { 
+                alert("Por favor, rellena TODOS los campos."); 
+                return; 
+            }
 
             document.getElementById('request-modal').style.display = 'none';
             ui.actions.style.display = 'none'; ui.loading.style.display = 'block';
             ui.status.innerText = "Enviando solicitud...";
 
             try {
+                // 1. Guarda los datos en la base de datos
                 await setDoc(doc(db, "users", email), { email: email, nombre: nombre, cuerpo: cuerpo, ciudad: ciudad, autorizado: false, fecha: new Date().toISOString() });
+                
+                // 2. Te manda el aviso por Telegram
                 const mensaje = `🚨 *NUEVA SOLICITUD T4C* 🚨\n\n👤 *Nombre:* ${nombre}\n👮 *Cuerpo:* ${cuerpo}\n📍 *Ciudad:* ${ciudad}\n📧 *Email:* ${email}`;
                 await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CHAT_ID, text: mensaje, parse_mode: 'Markdown' })
                 });
+                
                 ui.loading.style.display = 'none';
                 ui.status.innerHTML = `<span style="color:#2e7d32">✅ Solicitud enviada.</span><br>Avisa al administrador.`;
-            } catch (e) { console.error(e); ui.loading.style.display = 'none'; ui.status.innerText = "Error al enviar la solicitud."; }
+        } catch (e) { 
+                console.error(e); 
+                ui.loading.style.display = 'none'; 
+                // --- NUEVO BOTÓN DE REPARAR ACCESO ---
+                ui.status.innerHTML = `
+                    <span style="color:#ff9800; font-size:0.9rem;">⚠️ Ya dispones de cuenta pero no tienes acceso.</span><br>
+                    <button onclick="window.repairAccess('${email}', '${nombre}', '${cuerpo}', '${ciudad}')" style="margin-top:10px; background:#ff9800; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:bold; width:100%; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">🔧 SOLICITAR REPARAR ACCESO</button>
+                `; 
+            }
         };
-
+// --- NUEVA FUNCIÓN: AVISO DE RESTABLECIMIENTO ---
+        window.repairAccess = async (email, nombre, cuerpo, ciudad) => {
+            ui.status.innerHTML = "<div class='spinner'></div><p style='color:#aaa; font-size:0.9rem;'>Avisando al administrador...</p>";
+            try {
+                const mensaje = `🔧 *SOLICITUD DE RESTABLECIMIENTO* 🔧\n\nUn usuario revocado intenta acceder de nuevo:\n👤 *Nombre:* ${nombre}\n👮 *Cuerpo:* ${cuerpo}\n📍 *Ciudad:* ${ciudad}\n📧 *Email:* ${email}`;
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CHAT_ID, text: mensaje, parse_mode: 'Markdown' })
+                });
+                ui.status.innerHTML = `<span style="color:#2e7d32; font-weight:bold;">✅ Aviso enviado con éxito.</span><br><span style="color:#ddd; font-size:0.85rem;">El administrador revisará tu cuenta en breve. Recibirás un correo cuando se active.</span>`;
+            } catch (e) {
+                console.error(e);
+                ui.status.innerHTML = `<span style="color:#d32f2f">❌ Error al enviar el aviso.</span><br>Contacta con copg279@gmail.com`;
+            }
+        };
         async function enterApp(email) {
             try {
                 await updateDoc(doc(db, "users", email), { visitas: increment(1) });
@@ -398,30 +426,85 @@
             if(document.getElementById('nav-ranking')) document.getElementById('nav-ranking').classList.add('active');
             
             const container = document.getElementById('admin-list-container');
-            container.innerHTML = '<p style="text-align:center;">Calculando ranking...</p>';
+            container.innerHTML = '<p style="text-align:center; padding:20px;">Cargando usuarios...</p>';
 
             try {
                 const q = query(collection(db, "users"), where("autorizado", "==", true));
                 const querySnapshot = await getDocs(q);
                 let users = [];
                 querySnapshot.forEach(docSnap => users.push(docSnap.data()));
+                
+                // Ordenar por visitas (mayor a menor)
                 users.sort((a, b) => (b.visitas || 0) - (a.visitas || 0));
 
                 container.innerHTML = '';
+                if (users.length === 0) { container.innerHTML = '<p style="text-align:center; padding:20px; color:#666;">No hay usuarios activos.</p>'; return; }
+
                 users.forEach(u => {
                     const div = document.createElement('div');
-                    div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee; color:#333; cursor:pointer;';
-                    div.onclick = () => window.showUserLogs(u.email, u.nombre);
-                    div.innerHTML = `
-                        <div style="text-align:left;">
-                            <span style="font-weight:bold; font-size:0.9rem;">${u.nombre || u.email}</span>
-                            <br><small style="color:#666;">${u.cuerpo || ''}</small>
+                    div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #eee; color:#333; background: #fff;';
+                    
+                 // --- ZONA IZQUIERDA MEJORADA (Click abre historial) ---
+                    const leftDiv = document.createElement('div');
+                    leftDiv.style.cssText = 'text-align:left; flex-grow:1; cursor:pointer; padding-right: 10px;';
+                    leftDiv.onclick = () => window.showUserLogs(u.email, u.nombre);
+                    
+                    // TRATAMIENTO ESPECIAL PARA EL ADMINISTRADOR
+                    let nombreMostrar = u.nombre || u.email;
+                    let infoAbajo = `${u.cuerpo || ''} <span style="color:#ccc;">|</span> ${u.ciudad || ''}`;
+                    
+                    if (u.email === "copg279@gmail.com") {
+                        nombreMostrar = "👑 ADMINISTRADOR";
+                        infoAbajo = "<span style='color:#2e7d32;'>Control Total del Sistema</span>";
+                    }
+
+                    leftDiv.innerHTML = `
+                        <div>
+                            <span style="font-weight:900; font-size:0.95rem;">${nombreMostrar}</span> 
+                            <span style="font-size:0.85rem; color:#555; margin-left:4px;">(${u.email})</span>
                         </div>
-                        <div style="background:#0a2e52; color:white; padding:2px 8px; border-radius:10px; font-size:0.8rem;">${u.visitas || 0} visitas</div>
+                        <div style="margin-top:4px;">
+                            <small style="color:#666; font-weight:600; font-size:0.85rem; text-transform:uppercase;">${infoAbajo}</small>
+                        </div>
                     `;
+
+                    // --- ZONA DERECHA (Visitas y Papelera) ---
+                    const rightDiv = document.createElement('div');
+                    rightDiv.style.cssText = 'display:flex; align-items:center; gap:12px; flex-shrink:0;';
+                    // Badge de visitas
+                    rightDiv.innerHTML = `<div style="background:#0a2e52; color:white; padding:4px 10px; border-radius:12px; font-size:0.85rem; font-weight:bold; min-width:35px; text-align:center;">${u.visitas || 0}</div>`;
+                    
+                    // Botón de revocar acceso
+                    const btnDelete = document.createElement('button');
+                    btnDelete.innerHTML = '🗑️';
+                    btnDelete.title = 'Revocar acceso';
+                    btnDelete.style.cssText = 'background:#d32f2f; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:1rem; transition: background 0.2s;';
+                    btnDelete.onmouseover = function(){ this.style.background = '#b71c1c' };
+                    btnDelete.onmouseout = function(){ this.style.background = '#d32f2f' };
+                    btnDelete.onclick = (e) => {
+                        e.stopPropagation(); // Evita que se abra el historial al pulsar la papelera
+                        window.revokeUser(u.email);
+                    };
+                    
+                    rightDiv.appendChild(btnDelete);
+                    div.appendChild(leftDiv);
+                    div.appendChild(rightDiv);
                     container.appendChild(div);
                 });
-            } catch(e) { console.error("Error en ranking:", e); }
+            } catch(e) { 
+                console.error("Error cargando usuarios:", e);
+                container.innerHTML = '<p style="color:red; text-align:center; padding:20px;">Error al cargar la lista.</p>';
+            }
+        };
+
+        window.revokeUser = async (email) => {
+            if(confirm(`⚠️ ¿Seguro que quieres ELIMINAR el acceso a ${email}? Pasará a estar pendiente de aprobación.`)) {
+                try {
+                    await updateDoc(doc(db, "users", email), { autorizado: false });
+                    alert(`❌ Acceso revocado a ${email}.`);
+                    window.loadVisitsRanking(); 
+                } catch(e) { alert("Error al eliminar usuario."); console.error(e); }
+            }
         };
 
         window.showUserLogs = async (email, nombre) => {
@@ -478,8 +561,23 @@
         };
 
         window.approveUser = async (email) => {
-            try { await updateDoc(doc(db, "users", email), { autorizado: true, visitas: 0 }); alert(`✅ Usuario ${email} autorizado.`); window.loadAdminPanel(); } 
-            catch(e) { alert("Error al autorizar."); console.error(e); }
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxU86gsJALckVgtuecexlOzvWbjkiBQNOzMwHW-vcWXIMtyvSHYSphikWpLfE_vksI3/exec";
+
+            try {
+                await updateDoc(doc(db, "users", email), { autorizado: true, visitas: 0 });
+                
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' }, 
+                    body: JSON.stringify({ email: email })
+                });
+
+                alert(`✅ Usuario ${email} aprobado. Se le ha enviado un correo de aviso.`);
+                window.loadAdminPanel(); 
+            } catch(e) {
+                alert("Error al aprobar.");
+                console.error(e);
+            }
         };
 
         function showLogout() {
