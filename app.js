@@ -1,4 +1,4 @@
-const LOGO_JUDICIAL = "POLICIA.png";
+const LOGO_JUDICIAL = "T4C.png";
 const LOGO_GAD = "logogad.png";
 const ICON_CILOMOTOR = "CICLOMOTOR.png";
 const ICON_MOTO = "MOTO.png";
