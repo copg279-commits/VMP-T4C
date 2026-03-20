@@ -129,7 +129,7 @@
         </div>
     </div>
 
-    <div id="help-modal" class="modal">
+   <div id="help-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header-strip header-help">¿CÓMO FUNCIONA?</div>
             <div class="modal-body">
@@ -139,13 +139,17 @@
                     <li style="margin-bottom: 6px;"><strong>Resultados:</strong> Obtendrás la categoría oficial y requisitos.</li>
                     <li style="margin-bottom: 6px;"><strong>Infracciones:</strong> Pulsa el botón ROJO para ver el boletín.</li>
                 </ul>
-                <button class="help-toggle-btn" onclick="app.toggleHelpSection('legacy-vmp')"><span>📅 VMP SIN CHAPA IDENTIFICATIVA (ANTES 22-01-2024)</span><span>▼</span></button>
-                <div id="help-legacy-vmp" class="help-toggle-content">
-                    <h4 style="margin:5px 0 10px 0; color:#d32f2f; text-align:center; border-bottom:1px solid #e0e0e0; padding-bottom:5px;">CALENDARIO "DESAPARICIÓN" VMP ANTIGUO</h4>
-                    <p><strong>1. "Antiguos" (< 22/01/2024):</strong><br>Solo pegatina. Legales en 2026. Prohibidos en 2027.</p>
-                    <p><strong>2. "Certificados" (> 22/01/2024):</strong><br>Placa Metálica. Legales indefinidamente.</p>
+                
+                <div class="help-toggle-btn" style="cursor: default; justify-content: center; border-radius: 8px 8px 0 0; margin-bottom: 0;">
+                    <span>📅 VMP SIN CHAPA IDENTIFICATIVA (ANTES 22-01-2024)</span>
                 </div>
-                <div class="disclaimer-note" style="margin-top: 20px;">No válido para uso oficial. Pendiente de supervisión.</div>
+                <div class="help-toggle-content" style="display: block; border-radius: 0 0 8px 8px; margin-top: 0; border-top: none;">
+                    <h4 style="margin:5px 0 10px 0; color:#d32f2f; text-align:center; border-bottom:1px solid #e0e0e0; padding-bottom:5px;">CALENDARIO "DESAPARICIÓN" VMP ANTIGUO</h4>
+                    <p><strong>1. "Antiguos" (< 22/01/2024):</strong><br>Solo pegatina identificativa. Legales en 2026. Prohibidos a partir de 22/01/2027.</p>
+                    <p><strong>2. "Certificados" (> 22/01/2024):</strong><br>Placa Metálica de identificación. Legales indefinidamente.</p>
+                </div>
+
+                <div class="disclaimer-note" style="margin-top: 20px;">No válido para uso oficial. Aplicación de carácter meramente informativo.</div>
             </div>
             <div class="modal-fixed-bottom">
                 <button class="btn-modal-new" style="width:100%; padding: 12px; background-color: #0a2e52; color: white;" onclick="document.getElementById('help-modal').style.display='none'">ENTENDIDO</button>
