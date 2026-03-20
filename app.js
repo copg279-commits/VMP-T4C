@@ -1,4 +1,4 @@
-const LOGO_JUDICIAL = "T4C.png";
+const LOGO_JUDICIAL = "POLICIA.png";
 const LOGO_GAD = "logogad.png";
 const ICON_CILOMOTOR = "CICLOMOTOR.png";
 const ICON_MOTO = "MOTO.png";
@@ -27,10 +27,10 @@ const app = {
             text: "✅ <b>VPL (Vehículo Personal Ligero)</b><br>Peso < 25kg ó (Peso > 25kg y Vel < 14km/h).<br>No se considera vehículo a motor, pero requiere Seguro.<br><b>Sanción SOA:</b> Solo por circular (350€).<br><br>ℹ️ <b>NOTA PENAL:</b> No aplica Art. 384 CP salvo que el vehículo esté manipulado/trucado para superar los 25km/h o 1000W.",
             infractions: {
                 admin: { 
-                    default: { norm: "Art. 76.o LSV (Ref. 22bis RGV)", opt: "Genérica", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado incumpliendo las normas sobre el certificado para la circulación y su identificación (Carecer de registro).", action: "DEPÓSITO (ORD. MUN.)" },
+                    default: { norm: "Art. 76.o LSV (Ref. 22bis RGV)", opt: "Genérica", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado incumpliendo las normas sobre el certificado para la circulación y su identificación. (Aplicable según Instr. 16/V-124 DGT).", action: "DEPÓSITO (ORD. MUN.)" },
                     alt: { norm: "Art. 10.2 LSV (RDL 6/2015)", opt: "5A", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado careciendo de las placas de matrícula (o identificación VMP) estando inscrito.", action: "DEPÓSITO (ORD. MUN.)" }
                 },
-                soa: { type: "vpl", driver: { opt: "2.1.5P", amount: 350, text: "CIRCULAR el vehículo personal ligero (VPL) sin tener suscrito seguro obligatorio." }, owner: null }
+                soa: { type: "vpl", driver: { opt: "2.1.5P", amount: 350, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: null }
             }
         },
         "r_vmp_motor": {
@@ -39,10 +39,10 @@ const app = {
             text: "⚠️ <b>VMP ASIMILADO A MOTOR</b><br>Peso > 25kg Y Velocidad > 14km/h.<br>A efectos de Seguro se trata como Vehículo a Motor.<br><b>Sanción SOA:</b> 800€ (Circular) / 610€ (Titular).<br><br>ℹ️ <b>NOTA PENAL (Dictamen 2/2021):</b> No aplica Art. 384 CP ni 379 CP (Alcoholemia Penal) salvo que cause lesiones/homicidio imprudente.",
             infractions: {
                 admin: { 
-                    default: { norm: "Art. 76.o LSV (Ref. 22bis RGV)", opt: "Genérica", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado incumpliendo las normas sobre el certificado para la circulación y su identificación (Carecer de registro).", action: "DEPÓSITO (ORD. MUN.)" },
+                    default: { norm: "Art. 76.o LSV (Ref. 22bis RGV)", opt: "Genérica", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado incumpliendo las normas sobre el certificado para la circulación y su identificación. (Aplicable según Instr. 16/V-124 DGT).", action: "DEPÓSITO (ORD. MUN.)" },
                     alt: { norm: "Art. 10.2 LSV (RDL 6/2015)", opt: "5A", amount: "200 €", reduced: "100 €", text: "Circular con el vehículo reseñado careciendo de las placas de matrícula (o identificación VMP) estando inscrito.", action: "DEPÓSITO (ORD. MUN.)" }
                 },
-                soa: { type: "vmp_motor", driver: { opt: "2.1.5N", amount: 800, text: "CIRCULAR con el vehículo reseñado (VMP asimilado a motor) careciendo del seguro obligatorio." }, owner: { opt: "2.1.5O", amount: 610, text: "INCUMPLIR el propietario la obligación de mantener suscrito el seguro (VMP asimilado a motor)." } }
+                soa: { type: "vmp_motor", driver: { opt: "2.1.5N", amount: 800, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: { opt: "2.1.5O", amount: 610, text: "Incumplir el titular del vehículo reseñado la obligación de suscribir y mantener en vigor un contrato de seguro que cubra la responsabilidad civil derivada de su circulación." } }
             }
         },
         "r_epac": { title: "BICICLETA EPAC", icon: "🚲", style: "admin", matIconType: "none", perm: "Ninguno", seg: "No", mat: "No", casco: "Recomendado", text: "✅ <b>BICI ASISTIDA</b><br>Tratamiento de bicicleta.", infractions: null },
@@ -54,21 +54,21 @@ const app = {
             text: "⚠️ <b>CICLO DE MOTOR (L1e-A)</b><br>Requiere Matrícula, Seguro y Casco.<br><br>ℹ️ <b>CRITERIO FISCALÍA (Dictamen 2/2021):</b> Se excluye de la Vía Penal (Arts. 379/384 CP). Procede denuncia administrativa.", 
             infractions: {
                 admin: { 
-                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa (Permiso Circulación) (Vehículo NO registrado).", action: "INMOVILIZACIÓN / DEPÓSITO" },
+                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT al perder la condición de VMP).", action: "INMOVILIZACIÓN / DEPÓSITO" },
                     alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula (Vehículo SÍ registrado pero sin placa física).", action: "INMOVILIZACIÓN / DEPÓSITO" }
                 },
-                soa: { type: "moped", driver: { opt: "2.1.5A", amount: 1000, text: "Circular con ciclomotor sin seguro." }, owner: { opt: "2.1.1A", amount: 650, text: "Titular ciclomotor sin seguro." } } 
+                soa: { type: "moped", driver: { opt: "2.1.5A", amount: 1000, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: { opt: "2.1.1A", amount: 650, text: "Incumplir el titular del vehículo reseñado la obligación de suscribir y mantener en vigor un contrato de seguro que cubra la responsabilidad civil derivada de su circulación." } } 
             }
         },
         "r_l1e_b": { 
             title: "L1e-B (CICLOMOTOR 2R)", icon: "🛵", style: "penal", matIconType: "ciclomotor", perm: "AM / B", seg: "Sí", mat: "SÍ (Matrícula DGT)", casco: "Sí", 
             text: "⚠️ <b>CICLOMOTOR (L1e-B)</b><br>Vehículo matriculable.<br><b>⚖️ VÍA PENAL:</b><br>• 379.2 CP (Alcohol/Drogas)<br>• 384 CP (Permiso)", 
-            infractions: {
+           infractions: {
                 admin: { 
-                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa (Permiso Circulación) (Vehículo NO registrado).", action: "INMOVILIZACIÓN / DEPÓSITO" },
+                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT al perder la condición de VMP).", action: "INMOVILIZACIÓN / DEPÓSITO" },
                     alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula (Vehículo SÍ registrado pero sin placa física).", action: "INMOVILIZACIÓN / DEPÓSITO" }
                 },
-                soa: { type: "moped", driver: { opt: "2.1.5A", amount: 1000, text: "Circular con ciclomotor sin seguro." }, owner: { opt: "2.1.1A", amount: 650, text: "Titular ciclomotor sin seguro." } } 
+                soa: { type: "moped", driver: { opt: "2.1.5A", amount: 1000, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: { opt: "2.1.1A", amount: 650, text: "Incumplir el titular del vehículo reseñado la obligación de suscribir y mantener en vigor un contrato de seguro que cubra la responsabilidad civil derivada de su circulación." } } 
             }
         },
         "r_l2e": { 
@@ -76,10 +76,10 @@ const app = {
             text: "⚠️ <b>CICLOMOTOR 3 RUEDAS</b><br>Vehículo matriculable.<br><b>⚖️ VÍA PENAL:</b><br>• 379.2 CP (Alcohol/Drogas)<br>• 384 CP (Permiso)", 
             infractions: {
                 admin: { 
-                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa (Permiso Circulación).", action: "INMOVILIZACIÓN / DEPÓSITO" },
-                    alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula.", action: "INMOVILIZACIÓN / DEPÓSITO" }
+                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT al perder la condición de VMP).", action: "INMOVILIZACIÓN / DEPÓSITO" },
+                    alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula (Vehículo SÍ registrado pero sin placa física).", action: "INMOVILIZACIÓN / DEPÓSITO" }
                 },
-                soa: { type: "moped", driver: { opt: "2.1.5A", amount: 1000, text: "Circular con ciclomotor sin seguro." }, owner: { opt: "2.1.1A", amount: 650, text: "Titular ciclomotor sin seguro." } } 
+                soa: { type: "moped", driver: { opt: "2.1.5A", amount: 1000, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: { opt: "2.1.1A", amount: 650, text: "Incumplir el titular del vehículo reseñado la obligación de suscribir y mantener en vigor un contrato de seguro que cubra la responsabilidad civil derivada de su circulación." } } 
             }
         },
         "r_l6e": { 
@@ -87,10 +87,10 @@ const app = {
             text: "⚠️ <b>CUADRICICLO LIGERO</b><br>Vehículo matriculable.<br><b>⚖️ VÍA PENAL:</b><br>• 379.2 CP (Alcohol/Drogas)<br>• 384 CP (Permiso)", 
             infractions: {
                 admin: { 
-                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa (Permiso Circulación).", action: "INMOVILIZACIÓN / DEPÓSITO" },
-                    alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula.", action: "INMOVILIZACIÓN / DEPÓSITO" }
+                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT al perder la condición de VMP).", action: "INMOVILIZACIÓN / DEPÓSITO" },
+                    alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula (Vehículo SÍ registrado pero sin placa física).", action: "INMOVILIZACIÓN / DEPÓSITO" }
                 },
-                soa: { type: "moped", driver: { opt: "2.1.5A", amount: 1000, text: "Circular con ciclomotor sin seguro." }, owner: { opt: "2.1.1A", amount: 650, text: "Titular ciclomotor sin seguro." } } 
+                soa: { type: "moped", driver: { opt: "2.1.5A", amount: 1000, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: { opt: "2.1.1A", amount: 650, text: "Incumplir el titular del vehículo reseñado la obligación de suscribir y mantener en vigor un contrato de seguro que cubra la responsabilidad civil derivada de su circulación." } } 
             }
         },
         "r_l3e": { 
@@ -98,10 +98,10 @@ const app = {
             text: "⚠️ <b>MOTOCICLETA (L3e)</b><br>Vehículo matriculable.<br><b>⚖️ VÍA PENAL:</b><br>• 379.2 CP (Alcohol/Drogas)<br>• 384 CP (Permiso)", 
             infractions: {
                 admin: { 
-                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa (Permiso Circulación).", action: "INMOVILIZACIÓN / DEPÓSITO" },
+                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT al perder la condición de VMP).", action: "INMOVILIZACIÓN / DEPÓSITO" },
                     alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula.", action: "INMOVILIZACIÓN / DEPÓSITO" }
                 },
-                soa: { type: "moto", driver: { opt: "2.1.5B", amount: 1250, text: "Circular con motocicleta sin seguro." }, owner: { opt: "2.1.1B", amount: 850, text: "Titular motocicleta sin seguro." } } 
+                soa: { type: "moto", driver: { opt: "2.1.5B", amount: 1250, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: { opt: "2.1.1B", amount: 850, text: "Incumplir el titular del vehículo reseñado la obligación de suscribir y mantener en vigor un contrato de seguro que cubra la responsabilidad civil derivada de su circulación." } } 
             }
         },
         "r_l4e": { 
@@ -109,21 +109,21 @@ const app = {
             text: "⚠️ <b>MOTO CON SIDECAR</b><br>Vehículo matriculable.<br><b>⚖️ VÍA PENAL:</b><br>• 379.2 CP (Alcohol/Drogas)<br>• 384 CP (Permiso)", 
             infractions: {
                 admin: { 
-                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa (Permiso Circulación).", action: "INMOVILIZACIÓN / DEPÓSITO" },
+                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT al perder la condición de VMP).", action: "INMOVILIZACIÓN / DEPÓSITO" },
                     alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula.", action: "INMOVILIZACIÓN / DEPÓSITO" }
                 },
-                soa: { type: "moto", driver: { opt: "2.1.5B", amount: 1250, text: "Circular con motocicleta sin seguro." }, owner: { opt: "2.1.1B", amount: 850, text: "Titular motocicleta sin seguro." } } 
+                soa: { type: "moto", driver: { opt: "2.1.5B", amount: 1250, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: { opt: "2.1.1B", amount: 850, text: "Incumplir el titular del vehículo reseñado la obligación de suscribir y mantener en vigor un contrato de seguro que cubra la responsabilidad civil derivada de su circulación." } } 
             }
         },
         "r_l5e": { 
             title: "L5e (TRICICLO DE MOTOR)", icon: "🛺", style: "penal", matIconType: "moto", perm: "B / A", seg: "Sí", mat: "SÍ (Matrícula DGT)", casco: "Sí", 
             text: "⚠️ <b>TRICICLO SIMÉTRICO</b><br>Vehículo matriculable.<br><b>⚖️ VÍA PENAL:</b><br>• 379.2 CP (Alcohol/Drogas)<br>• 384 CP (Permiso)", 
-            infractions: {
+           infractions: {
                 admin: { 
-                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa (Permiso Circulación).", action: "INMOVILIZACIÓN / DEPÓSITO" },
+                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT al perder la condición de VMP).", action: "INMOVILIZACIÓN / DEPÓSITO" },
                     alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula.", action: "INMOVILIZACIÓN / DEPÓSITO" }
                 },
-                soa: { type: "moto", driver: { opt: "2.1.5B", amount: 1250, text: "Circular con vehículo sin seguro." }, owner: { opt: "2.1.1B", amount: 850, text: "Titular vehículo sin seguro." } } 
+                soa: { type: "moto", driver: { opt: "2.1.5B", amount: 1250, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: { opt: "2.1.1B", amount: 850, text: "Incumplir el titular del vehículo reseñado la obligación de suscribir y mantener en vigor un contrato de seguro que cubra la responsabilidad civil derivada de su circulación." } } 
             }
         },
         "r_l7e": { 
@@ -131,21 +131,45 @@ const app = {
             text: "⚠️ <b>CUADRICICLO PESADO</b><br>Vehículo matriculable.<br><b>⚖️ VÍA PENAL:</b><br>• 379.2 CP (Alcohol/Drogas)<br>• 384 CP (Permiso)", 
             infractions: {
                 admin: { 
-                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa (Permiso Circulación).", action: "INMOVILIZACIÓN / DEPÓSITO" },
+                    default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT al perder la condición de VMP).", action: "INMOVILIZACIÓN / DEPÓSITO" },
                     alt: { norm: "Art. 10.2 LSV", opt: "5A", amount: "200 €", reduced: "100 €", text: "Carecer de placas de matrícula.", action: "INMOVILIZACIÓN / DEPÓSITO" }
                 },
-                soa: { type: "turismo", driver: { opt: "2.1.5C", amount: 1500, text: "Circular con vehículo sin seguro." }, owner: { opt: "2.1.1C", amount: 1000, text: "Titular vehículo sin seguro." } } 
+                soa: { type: "turismo", driver: { opt: "2.1.5C", amount: 1500, text: "Circular con el vehículo reseñado careciendo del seguro obligatorio de responsabilidad civil exigido para su circulación." }, owner: { opt: "2.1.1C", amount: 1000, text: "Incumplir el titular del vehículo reseñado la obligación de suscribir y mantener en vigor un contrato de seguro que cubra la responsabilidad civil derivada de su circulación." } } 
             }
         },
         "r_prohibido": { 
             title: "PROHIBIDO", icon: "⛔", style: "danger", matIconType: "none", perm: "-", seg: "-", mat: "-", casco: "-", 
             text: "🚫 <b>NO APTO</b><br>No cumple normativa. Denuncia y retirada.", 
-            infractions: { admin: { default: { norm: "Art. 12 RGV / Art 3 RGV", opt: "Generico", amount: "200 €", reduced: "100 €", text: "Circular con un vehículo que no reúne las condiciones técnicas (No homologado) o no ha sido objeto de inspección (Sin CoC).", action: "INMOVILIZACIÓN DEFINITIVA" } }, soa: null }
+            infractions: { 
+                admin: { 
+                    default: { 
+                        norm: "Art. 1.1 RGV", 
+                        opt: "1.1.5B", 
+                        amount: "500 €", 
+                        reduced: "250 €", 
+                        text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT al no reunir requisitos VMP ni poder homologarse).", 
+                        action: "INMOVILIZACIÓN DEFINITIVA" 
+                    } 
+                }, 
+                soa: null 
+            }
         },
         "r_prohibido_voltaje": { 
             title: "ILEGAL (VOLTAJE)", icon: "🔌", style: "danger", matIconType: "none", perm: "-", seg: "-", mat: "-", casco: "-", 
             text: "🚫 <b>VOLTAJE PELIGROSO</b><br>Excede 100VCC / 240VAC.", 
-            infractions: { admin: { default: { norm: "Art. 1.1 RGV", opt: "1.1.5B", amount: "500 €", reduced: "250 €", text: "Carecer de autorización administrativa para circular.", action: "INMOVILIZACIÓN / DEPÓSITO" } }, soa: null }
+            infractions: { 
+                admin: { 
+                    default: { 
+                        norm: "Art. 1.1 RGV", 
+                        opt: "1.1.5B", 
+                        amount: "500 €", 
+                        reduced: "250 €", 
+                        text: "Circular con un vehículo careciendo de la autorización administrativa (Permiso de Circulación) correspondiente. (Aplicable según Instr. 2019/S-149 DGT por exceder los límites de voltaje y perder la condición de VMP).", 
+                        action: "INMOVILIZACIÓN DEFINITIVA" 
+                    } 
+                }, 
+                soa: null 
+            }
         }
     },
 
@@ -153,7 +177,23 @@ const app = {
         start: { q: "¿El vehículo está motorizado?", opts: [{ t: "Sí", next: "motor_si" }, { t: "No (Bicicleta/Tracción humana)", next: "motor_no" }] },
         motor_no: { q: "¿Funciona a pedal o manivela?", opts: [{ t: "Sí", next: "pedal_si" }, { t: "No", result: "r_juguete" }] },
         pedal_si: { q: "¿Cuántas ruedas tiene?", opts: [{ t: "1 rueda", result: "r_prohibido" }, { t: "2 o más ruedas", result: "r_ciclo" }] },
-        motor_si: { q: "¿Tiene pedaleo asistido (solo motor al pedalear) o acelerador/gatillo?", opts: [{ t: "Asistido", next: "pedales_aux_si" }, { t: "Acelerador/Gatillo (Independiente)", next: "pedales_aux_no" }] },
+motor_si: { 
+            q: "¿Cómo se acciona el motor principal?", 
+            opts: [
+                { t: "Pedaleo Asistido", next: "pedales_aux_si" }, 
+                { t: "Acelerador/Gatillo (Independiente)", next: "pedales_aux_no" },
+                { t: "Autoequilibrado (Segway o Hoverboard)", next: "vel_autoeq" }
+            ] 
+        },
+        
+        vel_autoeq: { 
+            q: "Vehículo Autoequilibrado. ¿Cuál es su velocidad máxima por construcción?", 
+            opts: [
+                { t: "Hasta 6 km/h", result: "r_juguete" }, 
+                { t: "De 6 a 25 km/h", next: "check_baterias" }, 
+                { t: "Más de 25 km/h", result: "r_prohibido" }
+            ] 
+        },
         pedales_aux_si: { q: "¿Cuál es la potencia del motor?", opts: [{ t: "Hasta 250 W", next: "potencia_250" }, { t: "Entre 250 W y 1000 W", next: "potencia_1000" }, { t: "Más de 1000 W", next: "check_velocidad_1000w" }] },
         check_velocidad_1000w: { q: "Motor > 1000W. ¿Cuál es la velocidad máxima por construcción?", opts: [{ t: "Hasta 45 km/h", result: "r_l1e_b" }, { t: "Más de 45 km/h", result: "r_l3e" }] },
 
@@ -264,14 +304,27 @@ const app = {
         const box = document.getElementById('res-legal-box');
         const btnSoa = document.getElementById('btn-soa');
 
+        // --- MAGIA PARA AUTOEQUILIBRADOS ---
+        // Comprobamos si en el historial de pasos está el de "vel_autoeq"
+        const isAutoeq = this.historyStack.includes('vel_autoeq');
+        const isVMP = (resultKey === 'r_vmp_vpl' || resultKey === 'r_vmp_motor');
+
         strip.className = "modal-header-strip";
         box.className = "legal-box";
         if (data.style === "penal" || data.style === "danger") { strip.classList.add("header-danger"); box.classList.add("box-penal"); }
         else if (data.style === "admin") { strip.classList.add("header-success"); box.classList.add("box-admin"); }
         else { strip.classList.add("header-warning"); box.classList.add("box-info"); }
 
-        document.getElementById('res-icon').innerText = data.icon;
-        document.getElementById('res-title').innerText = data.title;
+        // Si es autoequilibrado, cambiamos el emoji principal por tu imagen
+        if (isAutoeq && isVMP) {
+            // AQUI HEMOS AUMENTADO EL TAMAÑO (de 50px a 80px)
+            document.getElementById('res-icon').innerHTML = '<img src="logoautoequilibrado.png" style="height: 80px; width: auto; object-fit: contain;">';
+            document.getElementById('res-title').innerText = data.title + " (AUTOEQ.)";
+        } else {
+            document.getElementById('res-icon').innerHTML = data.icon; // Volvemos a usar el emoji normal
+            document.getElementById('res-title').innerText = data.title;
+        }
+        
         document.getElementById('res-permiso').innerText = data.perm;
         document.getElementById('res-seguro').innerText = data.seg;
         document.getElementById('res-matricula-text').innerText = data.mat; 
@@ -285,8 +338,14 @@ const app = {
             let iconSrc = ''; let iconClass = '';
             if (data.matIconType === 'ciclomotor') { iconSrc = ICON_CILOMOTOR; iconClass = 'plate-ciclomotor'; } 
             else if (data.matIconType === 'moto') { iconSrc = ICON_MOTO; iconClass = 'plate-moto'; } 
-            else if (data.matIconType === 'vmp') { iconSrc = ICON_VMP; iconClass = 'plate-vmp'; }
-            if (iconSrc) { plateContainer.innerHTML = `<img src="${iconSrc}" alt="Matrícula" class="${iconClass}">`; }
+            else if (data.matIconType === 'vmp') { 
+                // AQUI HEMOS CAMBIADO EL ICONO DE LA PLACA
+                // Si vino por la rama de autoequilibrado, cargamos VMPPLACA.png
+                iconSrc = (isAutoeq && isVMP) ? "VMPPLACA.png" : ICON_VMP; 
+                iconClass = 'plate-vmp'; 
+            }
+            // Añadimos onerror para que si aún no has subido las imágenes, no se vea un recuadro roto
+            if (iconSrc) { plateContainer.innerHTML = `<img src="${iconSrc}" alt="Vehículo" class="${iconClass}" onerror="this.style.display='none'">`; }
         }
 
         this.currentInfractionData = data.infractions;
