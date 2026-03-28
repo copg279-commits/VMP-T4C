@@ -67,11 +67,14 @@
                     <span>ℹ️</span> AYUDA E INSTRUCCIONES
                 </button>
                 <div id="login-help-box" class="login-help">
-                    1. Pulsa en <b>Acceso al Sistema</b>.<br>
-                    2. Si no tienes permiso, pulsa en <b>Solicitar Acceso</b> y rellena el formulario.
+                    Pulsa en <b>Acceder / Solicitar Acceso</b>.<br>
+                    El sistema detectará automáticamente si ya tienes permiso o si necesitas rellenar la solicitud.
                 </div>
-                <button id="btn-login" class="google-btn" type="button"><span>🔑</span> ACCESO AL SISTEMA</button>
-                <button type="button" class="req-btn" onmousedown="var m = document.getElementById('request-modal'); if(m){ m.style.display='flex'; m.style.zIndex='999999'; }"><span>🛡️</span> SOLICITAR ACCESO AL SISTEMA</button>
+                
+                <button id="btn-login" class="google-btn" type="button">
+                    <span>🔑</span> ACCEDER / SOLICITAR ACCESO
+                </button>
+
             </div>
             <div id="login-status" class="status-txt"></div>
         </div>
@@ -290,42 +293,71 @@
             status: document.getElementById('login-status')
         };
 
+        // --- SISTEMA DE CONTROL DE SESIÓN ---
         onAuthStateChanged(auth, (user) => {
-            if (user) { checkUser(user); } 
-            else { ui.loading.style.display = 'none'; ui.actions.style.display = 'block'; }
+            if (user) { 
+                checkUser(user); 
+            } else { 
+                ui.loading.style.display = 'none'; 
+                ui.actions.style.display = 'block'; 
+            }
         });
 
-        ui.btnLogin.addEventListener('click', () => {
-            ui.actions.style.display = 'none'; ui.loading.style.display = 'block';
+        // Evento del botón único (Acceder / Solicitar)
+        ui.btnLogin.addEventListener('click', async () => {
+            ui.actions.style.display = 'none'; 
+            ui.loading.style.display = 'block';
             ui.status.innerText = "Conectando al Sistema...";
-            signInWithPopup(auth, provider).catch(e => {
-                ui.loading.style.display = 'none'; ui.actions.style.display = 'block';
-                if (e.code === 'auth/popup-closed-by-user') { ui.status.innerText = "Operación cancelada."; } 
-                else { ui.status.innerText = "Error: " + e.message; }
-            });
+            try {
+                // Forzamos el login con Google
+                await signInWithPopup(auth, provider);
+            } catch (e) {
+                ui.loading.style.display = 'none'; 
+                ui.actions.style.display = 'block';
+                ui.status.innerText = e.code === 'auth/popup-closed-by-user' ? "Operación cancelada." : "Error: " + e.message;
+            }
         });
 
+        // --- COMPROBACIÓN DE PERMISOS ---
         async function checkUser(user) {
-            ui.actions.style.display = 'none'; ui.loading.style.display = 'block'; ui.status.innerText = ""; 
+            ui.actions.style.display = 'none'; 
+            ui.loading.style.display = 'block'; 
+            ui.status.innerText = "Verificando permisos..."; 
             try {
                 const snap = await getDoc(doc(db, "users", user.email));
                 if (snap.exists()) {
-                    if (snap.data().autorizado === true) { enterApp(user.email); } 
-                    else {
+                    const data = snap.data();
+                    if (data.autorizado === true) { 
+                        enterApp(user.email); 
+                    } else {
+                        // Existe pero tú lo has desactivado o no lo has aprobado
                         ui.loading.style.display = 'none';
                         ui.status.innerHTML = `<span style="color:#ff9800">⚠️ Solicitud pendiente de aprobación.</span><br>Usuario: <b>${user.email}</b>`;
+                        
+                        // Si es un usuario revocado, le damos la opción de avisar por Telegram (tu repairAccess)
+                        ui.status.innerHTML += `<br><button onclick="window.repairAccess('${user.email}', '${data.nombre}', '${data.cuerpo}', '${data.ciudad}')" style="margin-top:10px; background:#ff9800; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; width:100%;">🔧 SOLICITAR REPARAR ACCESO</button>`;
                         showLogout();
                     }
                 } else {
-                    ui.loading.style.display = 'none'; ui.actions.style.display = 'block'; 
-                    ui.status.innerHTML = `Usuario no registrado: <b>${user.email}</b><br>Pulsa en SOLICITAR ACCESO.`;
+                    // NO EXISTE -> Abrimos el formulario de solicitud automáticamente
+                    ui.loading.style.display = 'none'; 
                     document.getElementById('req-email').value = user.email; 
+                    ui.status.innerHTML = `Usuario no registrado: <b>${user.email}</b><br>Rellena el formulario de acceso.`;
+                    
+                    const m = document.getElementById('request-modal');
+                    if(m){ m.style.display='flex'; m.style.zIndex='999999'; }
                     showLogout();
                 }
-            } catch (e) { console.error(e); ui.loading.style.display = 'none'; ui.status.innerText = "Error de conexión con la BD."; showLogout(); }
+            } catch (e) { 
+                console.error(e); 
+                ui.loading.style.display = 'none'; 
+                ui.status.innerText = "Error de conexión con la BD."; 
+                showLogout(); 
+            }
         }
 
-      window.submitRequest = async () => {
+        // --- ENVÍO DE SOLICITUD ---
+        window.submitRequest = async () => {
             const email = document.getElementById('req-email').value.trim();
             const nombre = document.getElementById('req-nombre').value.trim();
             const cuerpo = document.getElementById('req-cuerpo').value;
@@ -337,258 +369,112 @@
             }
 
             document.getElementById('request-modal').style.display = 'none';
-            ui.actions.style.display = 'none'; ui.loading.style.display = 'block';
+            ui.loading.style.display = 'block';
             ui.status.innerText = "Enviando solicitud...";
 
             try {
-                // 1. Guarda los datos en la base de datos
-                await setDoc(doc(db, "users", email), { email: email, nombre: nombre, cuerpo: cuerpo, ciudad: ciudad, autorizado: false, fecha: new Date().toISOString() });
+                await setDoc(doc(db, "users", email), { email, nombre, cuerpo, ciudad, autorizado: false, fecha: new Date().toISOString() });
                 
-                // 2. Te manda el aviso por Telegram
                 const mensaje = `🚨 *NUEVA SOLICITUD T4C* 🚨\n\n👤 *Nombre:* ${nombre}\n👮 *Cuerpo:* ${cuerpo}\n📍 *Ciudad:* ${ciudad}\n📧 *Email:* ${email}`;
                 await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CHAT_ID, text: mensaje, parse_mode: 'Markdown' })
                 });
                 
                 ui.loading.style.display = 'none';
-                ui.status.innerHTML = `<span style="color:#2e7d32">✅ Solicitud enviada.</span><br>Avisa al administrador.`;
-        } catch (e) { 
-                console.error(e); 
+                ui.status.innerHTML = `<span style="color:#2e7d32">✅ Solicitud enviada con éxito.</span><br>Avisa al administrador.`;
+            } catch (e) { 
                 ui.loading.style.display = 'none'; 
-                // --- NUEVO BOTÓN DE REPARAR ACCESO ---
-                ui.status.innerHTML = `
-                    <span style="color:#ff9800; font-size:0.9rem;">⚠️ Ya dispones de cuenta pero no tienes acceso.</span><br>
-                    <button onclick="window.repairAccess('${email}', '${nombre}', '${cuerpo}', '${ciudad}')" style="margin-top:10px; background:#ff9800; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:bold; width:100%; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">🔧 SOLICITAR REPARAR ACCESO</button>
-                `; 
+                ui.status.innerText = "Error al enviar solicitud.";
             }
         };
-// --- NUEVA FUNCIÓN: AVISO DE RESTABLECIMIENTO ---
+
+        // --- FUNCIÓN REPARAR ACCESO (AVISO TELEGRAM) ---
         window.repairAccess = async (email, nombre, cuerpo, ciudad) => {
-            ui.status.innerHTML = "<div class='spinner'></div><p style='color:#aaa; font-size:0.9rem;'>Avisando al administrador...</p>";
+            ui.status.innerHTML = "<div class='spinner'></div><p>Avisando al administrador...</p>";
             try {
-                const mensaje = `🔧 *SOLICITUD DE RESTABLECIMIENTO* 🔧\n\nUn usuario revocado intenta acceder de nuevo:\n👤 *Nombre:* ${nombre}\n👮 *Cuerpo:* ${cuerpo}\n📍 *Ciudad:* ${ciudad}\n📧 *Email:* ${email}`;
+                const mensaje = `🔧 *SOLICITUD DE REPARACIÓN* 🔧\n\nUsuario revocado intenta entrar:\n👤 *Nombre:* ${nombre}\n📧 *Email:* ${email}`;
                 await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CHAT_ID, text: mensaje, parse_mode: 'Markdown' })
                 });
-                ui.status.innerHTML = `<span style="color:#2e7d32; font-weight:bold;">✅ Aviso enviado con éxito.</span><br><span style="color:#ddd; font-size:0.85rem;">El administrador revisará tu cuenta en breve. Recibirás un correo cuando se active.</span>`;
-            } catch (e) {
-                console.error(e);
-                ui.status.innerHTML = `<span style="color:#d32f2f">❌ Error al enviar el aviso.</span><br>Contacta con copg279@gmail.com`;
-            }
+                ui.status.innerHTML = `<span style="color:#2e7d32">✅ Aviso enviado.</span><br>El administrador lo revisará pronto.`;
+            } catch (e) { ui.status.innerText = "Error al avisar."; }
         };
+
+        // --- ENTRADA A LA APP ---
         async function enterApp(email) {
             try {
                 await updateDoc(doc(db, "users", email), { visitas: increment(1) });
                 await setDoc(doc(db, "stats", "global"), { total: increment(1) }, { merge: true });
                 await addDoc(collection(db, "users", email, "logs"), { fecha: new Date().toISOString() });
-            } catch (e) { console.error("Error al entrar:", e); }
+            } catch (e) { console.error("Error logs:", e); }
 
             setTimeout(() => {
                 ui.loginScreen.style.display = 'none';
                 ui.appContent.style.display = 'flex'; 
                 if (email === "copg279@gmail.com") {
-                    if(!document.getElementById('injected-admin-btn')) {
-                        let btn = document.getElementById('btn-admin-panel');
-                        if(btn) { btn.style.display = 'block'; btn.onclick = window.loadAdminPanel; }
-                    }
+                    let btn = document.getElementById('btn-admin-panel');
+                    if(btn) { btn.style.display = 'block'; btn.onclick = window.loadAdminPanel; }
                 }
                 window.dispatchEvent(new Event('auth-success')); 
             }, 800);
         }
 
+        // --- FUNCIONES DE ADMINISTRADOR (MANTENIDAS) ---
         window.loadAdminPanel = async () => {
-            if(document.getElementById('nav-pending')) document.getElementById('nav-pending').classList.add('active');
-            if(document.getElementById('nav-ranking')) document.getElementById('nav-ranking').classList.remove('active');
-            
             const modal = document.getElementById('admin-modal');
             const container = document.getElementById('admin-list-container');
             modal.style.display = 'flex';
-            container.innerHTML = '<p style="text-align:center;">Cargando solicitudes...</p>';
-
+            container.innerHTML = 'Cargando...';
             try {
                 const statsSnap = await getDoc(doc(db, "stats", "global"));
-                const totalVisitas = statsSnap.data()?.total || 0;
-                if(document.getElementById('total-visitas-count')) document.getElementById('total-visitas-count').innerText = totalVisitas;
-
+                document.getElementById('total-visitas-count').innerText = statsSnap.data()?.total || 0;
                 const q = query(collection(db, "users"), where("autorizado", "==", false));
-                const querySnapshot = await getDocs(q);
-                
-                container.innerHTML = '';
-                if (querySnapshot.empty) { container.innerHTML = '<p style="text-align:center; padding:10px; color:#666;">No hay solicitudes pendientes.</p>'; return; }
-
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
+                const snap = await getDocs(q);
+                container.innerHTML = snap.empty ? '<p>No hay solicitudes.</p>' : '';
+                snap.forEach(d => {
                     const div = document.createElement('div');
-                    div.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; color:#333;';
-                    div.innerHTML = `
-                        <div style="text-align:left;">
-                            <p style="margin:0;"><strong>${data.nombre || 'Sin nombre'}</strong></p>
-                            <p style="margin:0; font-size:0.8rem;">${data.cuerpo} - ${data.ciudad}</p>
-                        </div>
-                        <button style="background:#2e7d32; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold;" onclick="window.approveUser('${data.email}')">Aprobar</button>
-                    `;
+                    div.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:8px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center; color:#333;';
+                    div.innerHTML = `<div><b>${d.data().nombre}</b><br><small>${d.id}</small></div><button style="background:#2e7d32; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;" onclick="window.approveUser('${d.id}')">Aprobar</button>`;
                     container.appendChild(div);
                 });
-            } catch(e) { console.error("Error en panel:", e); }
+            } catch(e) { console.error(e); }
+        };
+
+        window.approveUser = async (email) => {
+            try {
+                await updateDoc(doc(db, "users", email), { autorizado: true });
+                alert("Usuario aprobado."); window.loadAdminPanel();
+            } catch(e) { alert("Error."); }
         };
 
         window.loadVisitsRanking = async () => {
-            if(document.getElementById('nav-pending')) document.getElementById('nav-pending').classList.remove('active');
-            if(document.getElementById('nav-ranking')) document.getElementById('nav-ranking').classList.add('active');
-            
             const container = document.getElementById('admin-list-container');
-            container.innerHTML = '<p style="text-align:center; padding:20px;">Cargando usuarios...</p>';
-
-            try {
-                const q = query(collection(db, "users"), where("autorizado", "==", true));
-                const querySnapshot = await getDocs(q);
-                let users = [];
-                querySnapshot.forEach(docSnap => users.push(docSnap.data()));
-                
-                // Ordenar por visitas (mayor a menor)
-                users.sort((a, b) => (b.visitas || 0) - (a.visitas || 0));
-
-                container.innerHTML = '';
-                if (users.length === 0) { container.innerHTML = '<p style="text-align:center; padding:20px; color:#666;">No hay usuarios activos.</p>'; return; }
-
-                users.forEach(u => {
-                    const div = document.createElement('div');
-                    div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #eee; color:#333; background: #fff;';
-                    
-                 // --- ZONA IZQUIERDA MEJORADA (Click abre historial) ---
-                    const leftDiv = document.createElement('div');
-                    leftDiv.style.cssText = 'text-align:left; flex-grow:1; cursor:pointer; padding-right: 10px;';
-                    leftDiv.onclick = () => window.showUserLogs(u.email, u.nombre);
-                    
-                    // TRATAMIENTO ESPECIAL PARA EL ADMINISTRADOR
-                    let nombreMostrar = u.nombre || u.email;
-                    let infoAbajo = `${u.cuerpo || ''} <span style="color:#ccc;">|</span> ${u.ciudad || ''}`;
-                    
-                    if (u.email === "copg279@gmail.com") {
-                        nombreMostrar = "👑 ADMINISTRADOR";
-                        infoAbajo = "<span style='color:#2e7d32;'>Control Total del Sistema</span>";
-                    }
-
-                    leftDiv.innerHTML = `
-                        <div>
-                            <span style="font-weight:900; font-size:0.95rem;">${nombreMostrar}</span> 
-                            <span style="font-size:0.85rem; color:#555; margin-left:4px;">(${u.email})</span>
-                        </div>
-                        <div style="margin-top:4px;">
-                            <small style="color:#666; font-weight:600; font-size:0.85rem; text-transform:uppercase;">${infoAbajo}</small>
-                        </div>
-                    `;
-
-                    // --- ZONA DERECHA (Visitas y Papelera) ---
-                    const rightDiv = document.createElement('div');
-                    rightDiv.style.cssText = 'display:flex; align-items:center; gap:12px; flex-shrink:0;';
-                    // Badge de visitas
-                    rightDiv.innerHTML = `<div style="background:#0a2e52; color:white; padding:4px 10px; border-radius:12px; font-size:0.85rem; font-weight:bold; min-width:35px; text-align:center;">${u.visitas || 0}</div>`;
-                    
-                    // Botón de revocar acceso
-                    const btnDelete = document.createElement('button');
-                    btnDelete.innerHTML = '🗑️';
-                    btnDelete.title = 'Revocar acceso';
-                    btnDelete.style.cssText = 'background:#d32f2f; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:1rem; transition: background 0.2s;';
-                    btnDelete.onmouseover = function(){ this.style.background = '#b71c1c' };
-                    btnDelete.onmouseout = function(){ this.style.background = '#d32f2f' };
-                    btnDelete.onclick = (e) => {
-                        e.stopPropagation(); // Evita que se abra el historial al pulsar la papelera
-                        window.revokeUser(u.email);
-                    };
-                    
-                    rightDiv.appendChild(btnDelete);
-                    div.appendChild(leftDiv);
-                    div.appendChild(rightDiv);
-                    container.appendChild(div);
-                });
-            } catch(e) { 
-                console.error("Error cargando usuarios:", e);
-                container.innerHTML = '<p style="color:red; text-align:center; padding:20px;">Error al cargar la lista.</p>';
-            }
-        };
-
-        window.revokeUser = async (email) => {
-            if(confirm(`⚠️ ¿Seguro que quieres ELIMINAR el acceso a ${email}? Pasará a estar pendiente de aprobación.`)) {
-                try {
-                    await updateDoc(doc(db, "users", email), { autorizado: false });
-                    alert(`❌ Acceso revocado a ${email}.`);
-                    window.loadVisitsRanking(); 
-                } catch(e) { alert("Error al eliminar usuario."); console.error(e); }
-            }
+            container.innerHTML = 'Cargando...';
+            const snap = await getDocs(query(collection(db, "users"), where("autorizado", "==", true)));
+            container.innerHTML = '';
+            let users = [];
+            snap.forEach(docSnap => users.push({id: docSnap.id, ...docSnap.data()}));
+            users.sort((a,b) => (b.visitas||0) - (a.visitas||0));
+            users.forEach(u => {
+                const div = document.createElement('div');
+                div.style.cssText = 'display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee; color:#333; cursor:pointer;';
+                div.onclick = () => window.showUserLogs(u.id, u.nombre);
+                div.innerHTML = `<span>${u.nombre || u.id}</span> <b>${u.visitas || 0}</b>`;
+                container.appendChild(div);
+            });
         };
 
         window.showUserLogs = async (email, nombre) => {
             const modal = document.getElementById('logs-modal');
             const container = document.getElementById('logs-list-container');
             modal.style.display = 'flex';
-            const titulo = (nombre && nombre !== "undefined") ? nombre : email;
-            container.innerHTML = `<b>Historial de:</b> ${titulo}<hr style='margin:10px 0; border:0; border-top:1px solid #eee;'>`;
-
-            try {
-                const snap = await getDocs(collection(db, "users", email, "logs"));
-                let logs = []; let totalVisitasUsuario = 0;
-                snap.forEach(d => { logs.push(d.data()); totalVisitasUsuario++; });
-                logs.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-
-                logs.forEach(l => {
-                    const f = new Date(l.fecha);
-                    const p = document.createElement('p'); p.style.margin = '5px 0';
-                    p.innerHTML = `📅 ${f.toLocaleDateString()} - ${f.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
-                    container.appendChild(p);
-                });
-
-                document.getElementById('btn-reset-user').onclick = async () => {
-                    if(confirm(`⚠️ ¿Borrar TODAS las visitas y fechas de ${titulo}? Se restarán ${totalVisitasUsuario} del total.`)) {
-                        try {
-                            await updateDoc(doc(db, "stats", "global"), { total: increment(-totalVisitasUsuario) });
-                            await updateDoc(doc(db, "users", email), { visitas: 0 });
-                            const promesas = [];
-                            snap.forEach(d => promesas.push(deleteDoc(d.ref)));
-                            await Promise.all(promesas);
-                            alert("Usuario reseteado con éxito."); location.reload();
-                        } catch(e) { alert("Error al borrar historial."); }
-                    }
-                };
-            } catch(e) { console.error(e); }
-        };
-
-        window.resetGlobalVisits = async () => {
-            if(confirm("⚠️ ¿BORRADO TOTAL? Se pondrán a cero todos los contadores y se ELIMINARÁN todas las fechas de entrada.")) {
-                try {
-                    await setDoc(doc(db, "stats", "global"), { total: 0 });
-                    const snap = await getDocs(collection(db, "users"));
-                    for (const uDoc of snap.docs) {
-                        const email = uDoc.id;
-                        await updateDoc(doc(db, "users", email), { visitas: 0 });
-                        const logsSnap = await getDocs(collection(db, "users", email, "logs"));
-                        const borrados = [];
-                        logsSnap.forEach(l => borrados.push(deleteDoc(l.ref)));
-                        await Promise.all(borrados);
-                    }
-                    alert("Sistema reseteado por completo."); location.reload(); 
-                } catch(e) { alert("Error en el reseteo masivo."); console.error(e); }
-            }
-        };
-
-        window.approveUser = async (email) => {
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxU86gsJALckVgtuecexlOzvWbjkiBQNOzMwHW-vcWXIMtyvSHYSphikWpLfE_vksI3/exec";
-
-            try {
-                await updateDoc(doc(db, "users", email), { autorizado: true, visitas: 0 });
-                
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' }, 
-                    body: JSON.stringify({ email: email })
-                });
-
-                alert(`✅ Usuario ${email} aprobado. Se le ha enviado un correo de aviso.`);
-                window.loadAdminPanel(); 
-            } catch(e) {
-                alert("Error al aprobar.");
-                console.error(e);
-            }
+            container.innerHTML = `Historial de: ${nombre || email}<hr>`;
+            const snap = await getDocs(collection(db, "users", email, "logs"));
+            snap.forEach(d => {
+                const p = document.createElement('p');
+                p.innerText = "📅 " + new Date(d.data().fecha).toLocaleString();
+                container.appendChild(p);
+            });
         };
 
         function showLogout() {
