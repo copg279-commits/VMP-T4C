@@ -1,0 +1,14 @@
+{
+  "name": "Tools For Cops - VMP 2026",
+  "short_name": "T4C VMP",
+  "description": "Control de Vehículos Ligeros",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#041222",
+  "theme_color": "#0a2e52",
+  "icons": [
+    { "src": "logo192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "logo512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

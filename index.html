@@ -6,6 +6,7 @@
     <title>POLICÍA LOCAL ALICANTE - VMP 2026</title>
     <link rel="stylesheet" href="styles.css">
     
+    
     <style>
         /* --- ESTILOS PANTALLA DE LOGIN DARK Y BOTONES PREMIUM --- */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #041222 0%, #0a2e52 100%); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
@@ -36,6 +37,12 @@
         .btn-admin-nav { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #eee; color: #333; transition: 0.3s; }
         .btn-admin-nav.active { background: #0a2e52; color: white; }
     </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a2e52">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="T4C VMP">
+    <link rel="apple-touch-icon" href="logo192.png">
 </head>
 <body>
 
@@ -593,6 +600,33 @@
             }
         }
     </script>
+<button id="btn-install-pwa" style="display: none; position: fixed; bottom: 85px; right: 20px; z-index: 99999; background: #ff9800; color: white; padding: 12px 20px; border-radius: 50px; font-weight: bold; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer;">
+        📲 INSTALAR APP
+    </button>
     <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
+        let deferredPrompt;
+        const installBtn = document.getElementById('btn-install-pwa');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+            }
+        });
+    </script>    <button id="btn-install-pwa" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 100000; background: #ff9800; color: white; padding: 12px 20px; border-radius: 50px; font-weight: bold; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.2s;">
+    📲 INSTALAR APP
+</button>
 </body>
 </html>
